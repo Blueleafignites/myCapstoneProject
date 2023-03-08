@@ -1,5 +1,40 @@
 @charset "utf-8";
 
+.delete-confirmation {
+  position: relative;
+}
+.confirmation-content {
+  position: absolute;
+  text-align: center;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  border-radius: 10px;
+  background-color: white;
+  z-index: 999;
+  left: -425px;
+}
+.confirmation-content p {
+  color: black;
+  background-color: white;
+  min-width: 450px;
+  padding: 5px 15px;
+  text-decoration: none;
+  display: block;
+  font-size: 14px;
+}
+.confirmation-content .close-confirmation {
+  text-align: right;
+}
+.confirmation-buttons {
+  display: flex;
+  justify-content: center;
+}
+.cancel-btn {
+  margin-left: 8px;
+}
+
+
+
 .task-container {
   display: flex;
 }
@@ -26,6 +61,11 @@
   padding: 10px;
   text-align: left;
 }
+.task p {
+  margin: 0;
+}
+
+
 .modal-overlay {
   position: fixed;
   display: none;
@@ -52,11 +92,6 @@
   padding: 20px;
   text-align: left;
 }
-.modal input[type="text"] {
-  width: 100%;
-  border: none;
-  height: 30px;
-}
 .modal-content .save-task {
   margin-top: 10px;
   text-align: center;
@@ -72,7 +107,7 @@
 }
 .task-description textarea {
   border: solid 1px lightgrey;
-  width: 98%;
+  width: 98.5%;
   min-height: 200px;
   resize: none;
   font-family: Arial, Helvetica, sans-serif;
@@ -80,14 +115,25 @@
   padding: 3px;
 }
 .task-title {
-  width: 90%;
-  margin-bottom: 10px;
   border: none;
   height: 32px;
+  flex: 1;
+}
+.task-header {
+  height: 50px;
+  position: relative;
+}
+.close-btn {
+  position: absolute; 
+  top: 0; 
+  right: 0; 
 }
 .task-title input {
   font-size: 16px;
   font-weight: bold;
+  width: 90%;
+  border: none;
+  height: 30px;
 }
 .taskPriority {
   padding-top: 10px;
@@ -98,15 +144,11 @@
 .task-list {
   padding-bottom: 10px;
 }
-.task-header, 
+.task-header,
 .taskTags, 
 .taskPriority,
-.taskTags, 
-.add-tags, 
-span, 
-.taskPriority {
+.add-tags {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
 }
 .tag, .priority {
@@ -257,7 +299,7 @@ hr {
   cursor: pointer;
 }
 .dropdown-content .delete,
-.task-actions .delete-task button {
+.task-actions .delete-task .delete-btn button {
   color: red;
 }
 .dropdown:hover > .drop-btn, 

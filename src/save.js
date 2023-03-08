@@ -1,3 +1,20 @@
+/*
+  Want to work on:
+  - Maybe make it so that adding a task puts a task card on list, add title, then user can edit task to see the rest of the details?
+  - Need more time on resizing lists for smaller screens
+  - Still need to create the delete task confirmation
+  - User should be able to add tags, delete tags, or edit them. Set colors as well
+  - Maybe make it so that the user can remove a tag when hovering over it, an x appear and user can click on it
+  - Priority and Tags drop down needs more time and work
+  - Resize Add/Edit task view for smaller screens
+  - Allow the user to add subtasks
+  - Need to figure out what I want for task card default color and priority colors
+  - Learn more about APIs and start to work on the database
+  - Add animations or something for when a button is clicked
+  - Make it so that you have to cancel or close the delete confirmation
+  - Hovering over tags and priority should not show drop down
+*/
+
 import { useState, useEffect, useRef } from "react";
 import './App.css';
 
@@ -23,13 +40,34 @@ const tags = [
 
 const lists = ["Today", month, year];
 
+const tasks = [  
+  { id: 1, title: "Dentist Appointment", list: lists[0], priority: priorities[0], tags: [tags[5]] },
+  { id: 2, title: "Go Grocery Shopping", list: lists[1], priority: priorities[1], tags: [tags[3], tags[1]] },
+  { id: 3, title: "Read 50 Books", list: lists[2], priority: priorities[3], tags: [tags[0]] },
+  { id: 4, title: "Clean Bedroom", list: lists[2], priority: priorities[2], tags: [tags[0], tags[5]] },
+];
+
+
+/*
+const lists = ["Today", month, year];
+
 const tasks = [
-  { title: "Dentist Appointment", list: lists[0], priority: priorities[0].name, tags: [tags[5].name] },
-  { title: "Go Grocery Shopping", list: lists[1], priority: priorities[1].name, tags: [tags[3].name, tags[1].name] },
-  { title: "Read 50 Books", list: lists[2], priority: priorities[3].name, tags: [tags[0].name] },
-  { title: "Clean Bedroom", list: lists[2], priority: priorities[2].name, tags: [tags[0].name, tags[5].name] },
+  { title: "Dentist Appointment", list: lists[0], priority: priorities[0], tags: [tags[5]] },
+  { title: "Go Grocery Shopping", list: lists[1], priority: priorities[1], tags: [tags[3], tags[1]] },
+  { title: "Read 50 Books", list: lists[2], priority: priorities[3], tags: [tags[0]] },
+  { title: "Clean Bedroom", list: lists[2], priority: priorities[2], tags: [tags[0], tags[5]] },
   { title: "Homework", list: lists[0], priority: priorities[1].name, tags: [tags[1].name] },
 ];
+
+const tasks = [
+  { id: 1, title: "Dentist Appointment", list: "Today", priority: "High", tags: ["Health"] },
+  { id: 2, title: "Go Grocery Shopping", list: month, priority: "Moderate", tags: ["Family", "Personal"] },
+  { id: 3, title: "Read 50 Books", list: year, priority: "None", tags: ["Personal"] },
+  { id: 4, title: "Clean Bedroom", list: year, priority: "Low", tags: ["Personal", "Health"] },
+  { id: 5, title: "Homework", list: "Today", priority: "Moderate", tags: ["School"] },
+];
+
+*/
 
 
 function ListContainer({ title }) {
@@ -68,7 +106,6 @@ function ListContainer({ title }) {
     document.getElementById(overlayId).style.display = "none";
   };
   
-
   return (
     <div className="list">
       <div className="list-header">
@@ -118,8 +155,8 @@ function Modal({ onClose, modalRef, currentList, otherLists, defaultValue, defau
 
 
   const handleTagSelection = (tag) => {
-    if (selectedTags.some((t) => t.name === tag.name)) {
-      setSelectedTags(selectedTags.filter((t) => t.name !== tag.name));
+    if (selectedTags.includes(tag)) {
+      setSelectedTags(selectedTags.filter((t) => t !== tag));
     } else {
       setSelectedTags([...selectedTags, tag]);
     }
