@@ -121,7 +121,7 @@ function ListContainer({ title }) {
 
 function Modal({ onClose, modalRef, currentList, otherLists, task }) {
   const [taskTitle, setTaskTitle] = useState(task.title);
-  const [selectedPriority, setSelectedPriority] = useState([]);
+  const [selectedPriority, setSelectedPriority] = useState(priorities.find(p => p.name === task.priority) || null);
   const [selectedTags, setSelectedTags] = useState(task.tags.map(tagName => tags.find(t => t.name === tagName)));
   const [showConfirmation, setShowConfirmation] = useState(false);
 
@@ -134,10 +134,10 @@ function Modal({ onClose, modalRef, currentList, otherLists, task }) {
   };
   
   const handlePrioritySelection = (priority) => {
-    if (selectedPriority.some((p) => p.name === priority.name)) {
-      setSelectedPriority(selectedPriority.filter((p) => p.name !== priority.name));
+    if (selectedPriority.name === priority.name) {
+      setSelectedPriority(selectedPriority.find((p) => p.name !== priority.name));
     } else {
-      setSelectedPriority([priority]);
+      setSelectedPriority(priority);
     }
   };
 
@@ -176,7 +176,7 @@ function Modal({ onClose, modalRef, currentList, otherLists, task }) {
                         {priorities.map((priority, index) => (
                           <li key={index}>
                             <label>
-                              <input type="checkbox" checked={selectedPriority.some((p) => p.name === priority.name)} onChange={() => handlePrioritySelection(priority)} />
+                              <input type="checkbox" checked={selectedPriority != null && selectedPriority.name === priority.name} onChange={() => handlePrioritySelection(priority)} />
                               <span className="priority">{priority.name}</span>
                             </label>
                           </li>
@@ -184,12 +184,10 @@ function Modal({ onClose, modalRef, currentList, otherLists, task }) {
                       </ul>
                     </div>
                     <div className="add-tags">
-                      {selectedPriority.length > 0 && (
+                      {selectedPriority != null && (
                         <div className="selected-tags">
                           <div className="priorities">
-                            {selectedPriority.map((priority, index) => (
-                              <div className="priority" key={index} style={{ background: priority.color }}>{priority.name}</div>
-                            ))}
+                            <div className="priority" key="priority" style={{ background: selectedPriority.color }}>{selectedPriority.name}</div>
                           </div>
                         </div>
                       )}
