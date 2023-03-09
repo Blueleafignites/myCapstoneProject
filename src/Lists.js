@@ -1,16 +1,14 @@
 /*
   Want to work on:
-  - Need more time on resizing lists for smaller screens
   - User should be able to add tags, delete tags, or edit them. Set colors as well
   - Maybe make it so that the user can remove a tag when hovering over it, an x appear and user can click on it
-  - Priority and Tags drop down needs more time and work
+  - Hovering over tags and priority should not show drop down
   - Resize Add/Edit task view for smaller screens
   - Allow the user to add subtasks
-  - Need to figure out what I want for task card default color and priority colors
   - Learn more about APIs and start to work on the database
-  - Add animations or something for when a button is clicked
-  - Make it so that you have to cancel or close the delete confirmation
-  - Hovering over tags and priority should not show drop down
+
+  - Fix adding priorities
+  - Resize lists for smaller screens
 */
 
 import { useState, useEffect, useRef } from "react";
@@ -24,7 +22,7 @@ const priorities = [
   { name: "High", color: "#FF4136" },
   { name: "Moderate", color: "#FF851B" },
   { name: "Low", color: "#2ECC40" },
-  { name: "None", color: "#0074D9" },
+  { name: "None", color: "#00AFFF" },
 ];
 
 const tags = [
@@ -78,6 +76,7 @@ function ListContainer({ title }) {
     document.getElementById(overlayId).style.display = "none";
   };
   
+  
   return (
     <div className="list">
       <div className="list-header">
@@ -114,7 +113,7 @@ function ListContainer({ title }) {
           <Modal onClose={handleCloseModal} modalRef={modalRef} currentList={currentList} otherLists={otherLists} task={task}/>
         </>
       )}
-      <div id={overlayId} className="modal-overlay" onClick={(event) => handleCloseModal(event)}></div>
+      <div id={overlayId} className="modal-overlay" onClick={() => handleCloseModal()}></div>
     </div>
   );
 }
@@ -143,15 +142,34 @@ function Modal({ onClose, modalRef, currentList, otherLists, task }) {
 
   function handleDelete() {
     setShowConfirmation(true);
+    document.addEventListener('click', handleOutsideClick);
+    document.body.classList.add('no-click');
   }
-
-  function handleConfirm() {
-    setShowConfirmation(false);
-  }
-
+  
   function handleClose() {
     setShowConfirmation(false);
+    document.body.classList.remove('no-click');
   }
+  
+  function handleConfirm() {
+    setShowConfirmation(false);
+    document.body.classList.remove('no-click');
+  }
+  
+  let confirmationOpened = false;
+  
+  function handleOutsideClick(event) {
+    const confirmationContent = document.querySelector('.confirmation-content');
+    const deleteBtn = document.querySelector('.delete-btn button');
+    if (confirmationOpened && confirmationContent && !confirmationContent.contains(event.target) && event.target !== deleteBtn) {
+      confirmationContent.classList.add('animation');
+      setTimeout(() => confirmationContent.classList.remove('animation'), 500);
+    }
+  }
+  
+  document.addEventListener('click', () => {
+    confirmationOpened = true;
+  });
 
   return (
     <>
@@ -271,7 +289,7 @@ function Modal({ onClose, modalRef, currentList, otherLists, task }) {
                         </div>
                       </div>
                     </div>
-                    )}
+                  )}
                   </div>
                 </div>
               </div>

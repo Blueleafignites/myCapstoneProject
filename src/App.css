@@ -1,5 +1,44 @@
 @charset "utf-8";
 
+.task-actions button, .save-task button {
+  background-color: lightgray;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.1s ease-in-out;
+}
+.task-actions button:hover, .save-task button:hover {
+  background-color: rgb(180, 180, 180);
+}
+.task-actions button:active, .save-task button:active {
+  transform: scale(0.95);
+}
+
+.no-click {
+  pointer-events: none;
+}
+.confirmation-content {
+  pointer-events: auto;
+}
+
+
+.animation {
+  animation-name: shake;
+  animation-duration: 0.5s;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+
 .delete-confirmation {
   position: relative;
 }
@@ -10,16 +49,12 @@
   padding: 10px;
   border-radius: 10px;
   background-color: white;
+  width: 425px;
   z-index: 999;
-  left: -425px;
+  left: -400px;
 }
 .confirmation-content p {
-  color: black;
-  background-color: white;
-  min-width: 450px;
   padding: 5px 15px;
-  text-decoration: none;
-  display: block;
   font-size: 14px;
 }
 .confirmation-content .close-confirmation {
@@ -32,9 +67,6 @@
 .cancel-btn {
   margin-left: 8px;
 }
-
-
-
 .task-container {
   display: flex;
 }
@@ -65,8 +97,6 @@
 .task p {
   margin: 0;
 }
-
-
 .modal-overlay {
   position: fixed;
   display: none;
@@ -208,7 +238,6 @@
 .dropdown-tags label {
   cursor: pointer;
 }
-
 .list {
   width: 350px;
   height: 85vh;
@@ -300,7 +329,7 @@ hr {
   cursor: pointer;
 }
 .dropdown-content .delete,
-.task-actions .delete-task .delete-btn button {
+.delete-btn button{
   color: red;
 }
 .dropdown:hover > .drop-btn, 
@@ -316,6 +345,10 @@ hr {
 @media screen and (max-width: 1100px) {
   .modal {
     width: 450px;
+  }
+  .confirmation-content {
+    width: 350px;
+    left: -290px;
   }
 }
 
@@ -342,6 +375,10 @@ hr {
 @media screen and (max-width: 700px) {
   .modal {
     width: 375px;
+  }
+  .confirmation-content {
+    width: 300px;
+    left: -225px;
   }
 }
 
