@@ -1,3 +1,18 @@
+/*
+  Want to work on:
+  - Need more time on resizing lists for smaller screens
+  - User should be able to add tags, delete tags, or edit them. Set colors as well
+  - Maybe make it so that the user can remove a tag when hovering over it, an x appear and user can click on it
+  - Priority and Tags drop down needs more time and work
+  - Resize Add/Edit task view for smaller screens
+  - Allow the user to add subtasks
+  - Need to figure out what I want for task card default color and priority colors
+  - Learn more about APIs and start to work on the database
+  - Add animations or something for when a button is clicked
+  - Make it so that you have to cancel or close the delete confirmation
+  - Hovering over tags and priority should not show drop down
+*/
+
 import { useState, useEffect, useRef } from "react";
 import './App.css';
 
@@ -25,40 +40,35 @@ const lists = ["Today", month, year];
 
 const tasks = [
   { title: "Dentist Appointment", list: lists[0], priority: priorities[0].name, tags: [tags[5].name] },
-  { title: "Go Grocery Shopping", list: lists[1], priority: priorities[1].name, tags: [tags[3].name, tags[1].name] },
+  { title: "Go Grocery Shopping", list: lists[1], priority: priorities[1].name, tags: [tags[3].name, tags[0].name] },
   { title: "Read 50 Books", list: lists[2], priority: priorities[3].name, tags: [tags[0].name] },
-  { title: "Clean Bedroom", list: lists[2], priority: priorities[2].name, tags: [tags[0].name, tags[5].name] },
+  { title: "Clean Bedroom", list: lists[1], priority: priorities[2].name, tags: [tags[0].name, tags[5].name] },
   { title: "Homework", list: lists[0], priority: priorities[1].name, tags: [tags[1].name] },
 ];
 
 
 function ListContainer({ title }) {
-  const [showModal, setShowModal] = useState(false);
   const modalRef = useRef();
   const overlayId = `modalOverlay-${title}`;
-  const [currentList] = useState(title);
-  const [modalDefaultValue, setModalDefaultValue] = useState('');
-  const [modalDefaultPriority, setModalDefaultPriority] = useState([]);
-  const [modalDefaultTags, setModalDefaultTags] = useState([]);
 
+  const [showModal, setShowModal] = useState(false);
+  const [currentList] = useState(title);
   const [otherLists, setOtherLists] = useState([]);
+  const [task, setTask] = useState({title: '', priority: [], tags: []});
+
   useEffect(() => {
     const allLists = ["Today", month, year];
     setOtherLists(allLists.filter(list => list !== currentList));
   }, [currentList]);
 
-  const handleOpenModal = (task) => {
-    setModalDefaultValue(task.title);
-    setModalDefaultPriority([priorities.find(p => p.name === task.priority)]);
-    setModalDefaultTags(task.tags);
+  const handleEditTask = (task) => {
+    setTask(task);
     setShowModal(true);
     document.getElementById(overlayId).style.display = "block";
-  };
+  }; 
 
   const handleAddTask = () => {
-    setModalDefaultValue('');
-    setModalDefaultPriority([]);
-    setModalDefaultTags([]);
+    setTask({title: '', priority: [], tags: []});
     setShowModal(true);
     document.getElementById(overlayId).style.display = "block";
   };
@@ -68,7 +78,6 @@ function ListContainer({ title }) {
     document.getElementById(overlayId).style.display = "none";
   };
   
-
   return (
     <div className="list">
       <div className="list-header">
@@ -94,7 +103,7 @@ function ListContainer({ title }) {
       </div>
       <hr />
       {tasks.filter((task) => task.list === currentList).map((task, index) => (
-        <div className="task-card" key={index} style={{ backgroundColor: `${priorities.find(p => p.name === task.priority)?.color}80` }} onClick={() => handleOpenModal(task)}>
+        <div className="task-card" key={index} style={{ backgroundColor: `${priorities.find(p => p.name === task.priority)?.color}80` }} onClick={() => handleEditTask(task)}>
           <div className="task">
             <p>{task.title}</p>
           </div>
@@ -102,7 +111,7 @@ function ListContainer({ title }) {
       ))}
       {showModal && (
         <>
-          <Modal onClose={handleCloseModal} modalRef={modalRef} currentList={currentList} otherLists={otherLists} defaultValue={modalDefaultValue} defaultPriority={modalDefaultPriority} defaultTags={modalDefaultTags}/>
+          <Modal onClose={handleCloseModal} modalRef={modalRef} currentList={currentList} otherLists={otherLists} task={task}/>
         </>
       )}
       <div id={overlayId} className="modal-overlay" onClick={(event) => handleCloseModal(event)}></div>
@@ -110,12 +119,11 @@ function ListContainer({ title }) {
   );
 }
 
-function Modal({ onClose, modalRef, currentList, otherLists, defaultValue, defaultPriority, defaultTags }) {
-  const [taskTitle, setTaskTitle] = useState(defaultValue);
-  const [selectedTags, setSelectedTags] = useState(defaultTags);
-  const [selectedPriority, setSelectedPriority] = useState(defaultPriority);
+function Modal({ onClose, modalRef, currentList, otherLists, task }) {
+  const [taskTitle, setTaskTitle] = useState(task.title);
+  const [selectedPriority, setSelectedPriority] = useState([]);
+  const [selectedTags, setSelectedTags] = useState(task.tags.map(tagName => tags.find(t => t.name === tagName)));
   const [showConfirmation, setShowConfirmation] = useState(false);
-
 
   const handleTagSelection = (tag) => {
     if (selectedTags.some((t) => t.name === tag.name)) {

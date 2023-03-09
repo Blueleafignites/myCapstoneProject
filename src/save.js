@@ -40,34 +40,13 @@ const tags = [
 
 const lists = ["Today", month, year];
 
-const tasks = [  
-  { id: 1, title: "Dentist Appointment", list: lists[0], priority: priorities[0], tags: [tags[5]] },
-  { id: 2, title: "Go Grocery Shopping", list: lists[1], priority: priorities[1], tags: [tags[3], tags[1]] },
-  { id: 3, title: "Read 50 Books", list: lists[2], priority: priorities[3], tags: [tags[0]] },
-  { id: 4, title: "Clean Bedroom", list: lists[2], priority: priorities[2], tags: [tags[0], tags[5]] },
-];
-
-
-/*
-const lists = ["Today", month, year];
-
 const tasks = [
-  { title: "Dentist Appointment", list: lists[0], priority: priorities[0], tags: [tags[5]] },
-  { title: "Go Grocery Shopping", list: lists[1], priority: priorities[1], tags: [tags[3], tags[1]] },
-  { title: "Read 50 Books", list: lists[2], priority: priorities[3], tags: [tags[0]] },
-  { title: "Clean Bedroom", list: lists[2], priority: priorities[2], tags: [tags[0], tags[5]] },
+  { title: "Dentist Appointment", list: lists[0], priority: priorities[0].name, tags: [tags[5].name] },
+  { title: "Go Grocery Shopping", list: lists[1], priority: priorities[1].name, tags: [tags[3].name, tags[1].name] },
+  { title: "Read 50 Books", list: lists[2], priority: priorities[3].name, tags: [tags[0].name] },
+  { title: "Clean Bedroom", list: lists[2], priority: priorities[2].name, tags: [tags[0].name, tags[5].name] },
   { title: "Homework", list: lists[0], priority: priorities[1].name, tags: [tags[1].name] },
 ];
-
-const tasks = [
-  { id: 1, title: "Dentist Appointment", list: "Today", priority: "High", tags: ["Health"] },
-  { id: 2, title: "Go Grocery Shopping", list: month, priority: "Moderate", tags: ["Family", "Personal"] },
-  { id: 3, title: "Read 50 Books", list: year, priority: "None", tags: ["Personal"] },
-  { id: 4, title: "Clean Bedroom", list: year, priority: "Low", tags: ["Personal", "Health"] },
-  { id: 5, title: "Homework", list: "Today", priority: "Moderate", tags: ["School"] },
-];
-
-*/
 
 
 function ListContainer({ title }) {
@@ -88,10 +67,10 @@ function ListContainer({ title }) {
   const handleOpenModal = (task) => {
     setModalDefaultValue(task.title);
     setModalDefaultPriority([priorities.find(p => p.name === task.priority)]);
-    setModalDefaultTags(task.tags);
+    setModalDefaultTags(task.tags.map(tagName => tags.find(tag => tag.name === tagName)));
     setShowModal(true);
     document.getElementById(overlayId).style.display = "block";
-  };
+  }; 
 
   const handleAddTask = () => {
     setModalDefaultValue('');
@@ -106,6 +85,7 @@ function ListContainer({ title }) {
     document.getElementById(overlayId).style.display = "none";
   };
   
+
   return (
     <div className="list">
       <div className="list-header">
@@ -155,8 +135,8 @@ function Modal({ onClose, modalRef, currentList, otherLists, defaultValue, defau
 
 
   const handleTagSelection = (tag) => {
-    if (selectedTags.includes(tag)) {
-      setSelectedTags(selectedTags.filter((t) => t !== tag));
+    if (selectedTags.some((t) => t.name === tag.name)) {
+      setSelectedTags(selectedTags.filter((t) => t.name !== tag.name));
     } else {
       setSelectedTags([...selectedTags, tag]);
     }
