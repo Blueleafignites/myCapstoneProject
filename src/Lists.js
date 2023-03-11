@@ -3,11 +3,13 @@
   - User should be able to add tags, delete tags, or edit them. Set colors as well
   - Maybe make it so that the user can remove a tag when hovering over it, an x appear and user can click on it
   - Hovering over tags and priority should not show drop down
-  - Learn more about APIs and start to work on the database
 
   - Resize lists for smaller screens
   - Fix the tasks so that it doesn't break when a task does not have a tag
   - Make the default task card color the same as none
+  - Make it so that a user can add a deadline to a task
+  - Make it  so that editing a task and then pressing save doesn't add a new task
+  - Make it so that adding a task to the list, but then changing the list with the select menu, adds the task to the list that was selected, rather than where the add-btn was pressed.
 */
 
 import { useState, useEffect, useRef } from "react";
@@ -43,6 +45,17 @@ const tasks = [
   { id: 5, title: "Homework", list: lists[0], priority: priorities[1].name, tags: [tags[1].name] },
   { id: 6, title: "Water the Plants", list: lists[1], priority: priorities[2].name, tags: [tags[0].name] },
 ];
+
+/*
+const tasks = [
+  { id: 1, title: "Dentist Appointment", list: lists[0], priority: priorities[0].name, tags: [tags[5].name], deadline: new Date("2023-03-11") },
+  { id: 2, title: "Go Grocery Shopping", list: lists[1], priority: priorities[1].name, tags: [tags[3].name, tags[0].name], deadline: new Date("2023-03-12") },
+  { id: 3, title: "Read 50 Books", list: lists[2], priority: priorities[3].name, tags: [tags[0].name] },
+  { id: 4, title: "Clean Bedroom", list: lists[1], priority: priorities[2].name, tags: [tags[0].name, tags[5].name] },
+  { id: 5, title: "Homework", list: lists[0], priority: priorities[1].name, tags: [tags[1].name], deadline: new Date("2023-03-13") },
+  { id: 6, title: "Water the Plants", list: lists[1], priority: priorities[2].name },
+];
+*/
 
 
 function ListContainer({ title }) {
@@ -138,6 +151,19 @@ function Modal({ onClose, modalRef, currentList, otherLists, task }) {
       setSelectedPriority(priority);
     }
   };
+
+  function handleSaveTask() {
+    const newTask = {
+      id: tasks.length + 1,
+      title: taskTitle,
+      list: currentList,
+      priority: selectedPriority?.name || null,
+      tags: selectedTags.map(tag => tag.name),
+    };
+  
+    tasks.push(newTask);
+    onClose();
+  }
   
   function handleDelete() {
     setShowConfirmation(true);
@@ -301,7 +327,7 @@ function Modal({ onClose, modalRef, currentList, otherLists, task }) {
               <textarea  id="taskDescription" placeholder="Add a description..." />
             </div>
             <div className="save-task">
-              <button type="button">Save</button>
+              <button onClick={handleSaveTask}>Save</button>
             </div>
           </form>
         </div>
