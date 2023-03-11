@@ -3,12 +3,11 @@
   - User should be able to add tags, delete tags, or edit them. Set colors as well
   - Maybe make it so that the user can remove a tag when hovering over it, an x appear and user can click on it
   - Hovering over tags and priority should not show drop down
-  - Resize Add/Edit task view for smaller screens
-  - Allow the user to add subtasks
   - Learn more about APIs and start to work on the database
 
-  - Fix adding priorities
   - Resize lists for smaller screens
+  - Fix the tasks so that it doesn't break when a task does not have a tag
+  - Make the default task card color the same as none
 */
 
 import { useState, useEffect, useRef } from "react";
@@ -37,11 +36,12 @@ const tags = [
 const lists = ["Today", month, year];
 
 const tasks = [
-  { title: "Dentist Appointment", list: lists[0], priority: priorities[0].name, tags: [tags[5].name] },
-  { title: "Go Grocery Shopping", list: lists[1], priority: priorities[1].name, tags: [tags[3].name, tags[0].name] },
-  { title: "Read 50 Books", list: lists[2], priority: priorities[3].name, tags: [tags[0].name] },
-  { title: "Clean Bedroom", list: lists[1], priority: priorities[2].name, tags: [tags[0].name, tags[5].name] },
-  { title: "Homework", list: lists[0], priority: priorities[1].name, tags: [tags[1].name] },
+  { id: 1, title: "Dentist Appointment", list: lists[0], priority: priorities[0].name, tags: [tags[5].name] },
+  { id: 2, title: "Go Grocery Shopping", list: lists[1], priority: priorities[1].name, tags: [tags[3].name, tags[0].name] },
+  { id: 3, title: "Read 50 Books", list: lists[2], priority: priorities[3].name, tags: [tags[0].name] },
+  { id: 4, title: "Clean Bedroom", list: lists[1], priority: priorities[2].name, tags: [tags[0].name, tags[5].name] },
+  { id: 5, title: "Homework", list: lists[0], priority: priorities[1].name, tags: [tags[1].name] },
+  { id: 6, title: "Water the Plants", list: lists[1], priority: priorities[2].name, tags: [tags[0].name] },
 ];
 
 
@@ -75,7 +75,6 @@ function ListContainer({ title }) {
     setShowModal(false);
     document.getElementById(overlayId).style.display = "none";
   };
-  
   
   return (
     <div className="list">
@@ -133,13 +132,13 @@ function Modal({ onClose, modalRef, currentList, otherLists, task }) {
   };
   
   const handlePrioritySelection = (priority) => {
-    if (selectedPriority.name === priority.name) {
-      setSelectedPriority(selectedPriority.find((p) => p.name !== priority.name));
+    if (selectedPriority != null && selectedPriority.name === priority.name) {
+      setSelectedPriority(null);
     } else {
       setSelectedPriority(priority);
     }
   };
-
+  
   function handleDelete() {
     setShowConfirmation(true);
     document.addEventListener('click', handleOutsideClick);
@@ -152,6 +151,9 @@ function Modal({ onClose, modalRef, currentList, otherLists, task }) {
   }
   
   function handleConfirm() {
+    const index = tasks.findIndex((t) => t.id === task.id);
+    tasks.splice(index, 1);
+    onClose();
     setShowConfirmation(false);
     document.body.classList.remove('no-click');
   }
@@ -299,7 +301,7 @@ function Modal({ onClose, modalRef, currentList, otherLists, task }) {
               <textarea  id="taskDescription" placeholder="Add a description..." />
             </div>
             <div className="save-task">
-              <button type="submit">Save</button>
+              <button type="button">Save</button>
             </div>
           </form>
         </div>
