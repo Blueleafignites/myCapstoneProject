@@ -5,7 +5,6 @@
   - Hovering over tags and priority should not show drop down, make the add button clickable
 
   - Resize lists for smaller screens
-  - Fix the tasks so that it doesn't break when a task does not have a tag
   - Make it so that when a user doesn't set a deadline, the deadline input doesn't disappear
   - Make it  so that editing a task and then pressing save doesn't add a new task
   - Make it so that adding a task to the list, but then changing the list with the select menu, adds the task to the list that was selected, rather than where the add-btn was pressed
@@ -37,27 +36,16 @@ const tags = [
 ];
 
 const lists = ["Today", month, year];
-/*
-const tasks = [
-  { id: 1, title: "Dentist Appointment", list: lists[0], priority: priorities[0].name, tags: [tags[5].name] },
-  { id: 2, title: "Go Grocery Shopping", list: lists[1], priority: priorities[1].name, tags: [tags[3].name, tags[0].name] },
-  { id: 3, title: "Read 50 Books", list: lists[2], priority: priorities[3].name, tags: [tags[0].name] },
-  { id: 4, title: "Clean Bedroom", list: lists[1], priority: priorities[2].name, tags: [tags[0].name, tags[5].name] },
-  { id: 5, title: "Homework", list: lists[0], priority: priorities[1].name, tags: [tags[1].name] },
-  { id: 6, title: "Water the Plants", list: lists[1], priority: priorities[2].name, tags: [tags[0].name] },
-];
-*/
+
 const tasks = [
   { id: 1, title: "Dentist Appointment", list: lists[0], priority: priorities[0].name, tags: [tags[5].name], deadline: new Date("2023-03-11") },
   { id: 2, title: "Go Grocery Shopping", list: lists[1], priority: priorities[1].name, tags: [tags[3].name, tags[0].name], deadline: null },
   { id: 3, title: "Read 50 Books", list: lists[2], priority: priorities[3].name, tags: [tags[0].name], deadline: new Date("2023-12-31") },
   { id: 4, title: "Clean Bedroom", list: lists[1], priority: priorities[2].name, tags: [tags[0].name, tags[5].name], deadline: null },
   { id: 5, title: "Homework", list: lists[0], priority: priorities[1].name, tags: [tags[1].name], deadline: new Date("2023-03-13") },
-  { id: 6, title: "Water the Plants", list: lists[1], priority: priorities[2].name, tags: null, deadline: null },
-  { id: 7, title: "Optometrist Appointment", list: lists[1], priority: null, tags: [tags[5].name], deadline: new Date("2023-03-22") },
+  { id: 6, title: "Water the Plants", list: lists[1], priority: priorities[2].name, tags: [], deadline: null },
+  { id: 7, title: "Optometrist Appointment", list: lists[1], priority: [], tags: [tags[5].name], deadline: new Date("2023-03-22") },
 ];
-
-
 
 function ListContainer({ title }) {
   const modalRef = useRef();
@@ -213,143 +201,144 @@ function Modal({ onClose, modalRef, currentList, otherLists, task }) {
   });
 
   return (
-    <>
-      <div className="modal" ref={modalRef}>
-        <div className="modal-content">
-          <form>
-            <div className="task-header">
-              <div className="task-title">
-                <input type="text" id="taskName" placeholder="Enter a title for this task..." value={taskTitle} onChange={(e) => setTaskTitle(e.target.value)}/>
-              </div>
-              <div className="close-btn">
-                <span className="material-symbols-outlined" onClick={onClose}>close</span>
-              </div>
+    <div className="modal" ref={modalRef}>
+      <div className="modal-content">
+        <form>
+          <div className="task-header">
+            <div className="task-title">
+              <input type="text" id="taskName" placeholder="Enter a title for this task..." value={taskTitle} onChange={(e) => setTaskTitle(e.target.value)}/>
             </div>
-            <div className="task-container">
-              <div className="task-info">
-                <div className="taskPriority">
-                  <label htmlFor="taskPriority" className="priority-label">Priority:</label>
-                  <div className="dropdown">
-                    <div className="dropdown-tags">
-                      <ul>
-                        {priorities.map((priority, index) => (
-                          <li key={index}>
-                            <label>
-                              <input type="checkbox" checked={selectedPriority != null && selectedPriority.name === priority.name} onChange={() => handlePrioritySelection(priority)} />
-                              <span className="priority">{priority.name}</span>
-                            </label>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="add-tags">
-                      {selectedPriority != null && (
-                        <div className="selected-tags">
-                          <div className="priorities">
-                            <div className="priority" key="priority" style={{ background: selectedPriority.color }}>{selectedPriority.name}</div>
-                          </div>
-                        </div>
-                      )}
-                      <div className="tagDrop-btn">
-                        <span className="material-symbols-outlined">add</span>
-                      </div>
-                    </div>
+            <div className="close-btn">
+              <span className="material-symbols-outlined" onClick={onClose}>close</span>
+            </div>
+          </div>
+          <div className="task-container">
+            <div className="task-info">
+              <div className="taskPriority">
+                <label htmlFor="taskPriority" className="priority-label">Priority:</label>
+                <div className="dropdown">
+                  <div className="dropdown-tags">
+                    <ul>
+                      {priorities.map((priority, index) => (
+                        <li key={index}>
+                          <label>
+                            <input type="checkbox" checked={selectedPriority != null && selectedPriority.name === priority.name} onChange={() => handlePrioritySelection(priority)} />
+                            <span className="priority">{priority.name}</span>
+                          </label>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                </div>
-                <div className="taskTags">
-                  <label htmlFor="taskTags" class="tags-label">Tags: </label>
-                  <div className="dropdown">
-                    <div className="dropdown-tags">
-                      <ul>
-                        {tags.map((tag, index) => (
-                          <li key={index}>
-                            <label>
-                              <input type="checkbox" checked={selectedTags.includes(tag)} onChange={() => handleTagSelection(tag)} />
-                              <span className="tag">{tag.name}</span>
-                            </label>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="add-tags">
-                      {selectedTags.length > 0 && (
-                        <div className="selected-tags">
-                          <div className="tags">
-                            {selectedTags.map((tag, index) => (
-                              <div className="tag" key={index} style={{ background: tag.color }}>{tag.name}</div>
-                            ))}
-                          </div>
+                  <div className="add-tags">
+                    {selectedPriority != null && (
+                      <div className="selected-tags">
+                        <div className="priorities">
+                          <div className="priority" key="priority" style={{ background: selectedPriority.color }}>{selectedPriority.name}</div>
                         </div>
-                      )}
-                      <div className="tagDrop-btn">
-                        <span className="material-symbols-outlined">add</span>
                       </div>
-                    </div> 
-                  </div>
-                </div>
-
-                  <div className="deadline">
-                    <label htmlFor="deadline">Deadline:</label>
-                    {task.deadline !== null && (
-                      <input type="date" id="deadline" name="deadline" value={selectedDeadline} onChange={handleDeadlineChange} />
                     )}
+                    <div className="tagDrop-btn">
+                      <span className="material-symbols-outlined">add</span>
+                    </div>
                   </div>
-                
-                <div className="task-list">
-                  <label htmlFor="listSelect">Add to list: </label>
-                  <select id="listSelect">
-                    <option value={currentList}>{currentList}</option>
-                    {otherLists.map((list) => (
-                      <option value={list} key={list}>
-                        {list}
-                      </option>
-                    ))}
-                  </select>
                 </div>
               </div>
-              <div className="task-actions">
-                <div className="actions-button">
-                  <button type="submit">Move</button>
-                </div>
-                <div className="actions-button">
-                  <button type="submit">Archive</button>
-                </div>
-                <div className="actions-button delete-task">
-                <div className="delete-confirmation">
-                  <div className="delete-btn">
-                    <button type="button" onClick={handleDelete}>Delete</button>
+              <div className="taskTags">
+                <label htmlFor="taskTags" class="tags-label">Tags: </label>
+                <div className="dropdown">
+                  <div className="dropdown-tags">
+                    <ul>
+                      {tags.map((tag, index) => (
+                        <li key={index}>
+                          <label>
+                            <input type="checkbox" checked={selectedTags.includes(tag)} onChange={() => handleTagSelection(tag)} />
+                            <span className="tag">{tag.name}</span>
+                          </label>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  {showConfirmation && (
-                    <div className="confirmation-content">
-                      <div className="close-confirmation">
-                        <span className="material-symbols-outlined" onClick={handleClose}>close</span>
+                  <div className="add-tags">
+                    {selectedTags.length > 0 && (
+                      <div className="selected-tags">
+                        <div className="tags">
+                          {selectedTags.map((tag, index) => (
+                            <div className="tag" key={index} style={{ background: tag.color }}>{tag.name}</div>
+                          ))}
+                        </div>
                       </div>
-                      <p>Are you sure you want to delete this task? It's irreversible.</p>
-                      <div className="confirmation-buttons">
-                        <div>
-                          <button type="button" onClick={handleConfirm}>Confirm</button>
-                        </div>
-                        <div className="cancel-btn">
-                          <button type="button" onClick={handleClose}>Cancel</button>
-                        </div>
+                    )}
+                    <div className="tagDrop-btn">
+                      <span className="material-symbols-outlined">add</span>
+                    </div>
+                  </div> 
+                </div>
+              </div>
+
+                <div className="deadline">
+                  <label htmlFor="deadline">Deadline:</label>
+                  {task.deadline !== null && (
+                    <input type="date" id="deadline" name="deadline" value={selectedDeadline} onChange={handleDeadlineChange} />
+                  )}
+                  <div>
+                    <span className="material-symbols-outlined">add</span>
+                  </div>
+                </div>
+              
+              <div className="task-list">
+                <label htmlFor="listSelect">Add to list: </label>
+                <select id="listSelect">
+                  <option value={currentList}>{currentList}</option>
+                  {otherLists.map((list) => (
+                    <option value={list} key={list}>
+                      {list}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="task-actions">
+              <div className="actions-button">
+                <button type="submit">Move</button>
+              </div>
+              <div className="actions-button">
+                <button type="submit">Archive</button>
+              </div>
+              <div className="actions-button delete-task">
+              <div className="delete-confirmation">
+                <div className="delete-btn">
+                  <button type="button" onClick={handleDelete}>Delete</button>
+                </div>
+                {showConfirmation && (
+                  <div className="confirmation-content">
+                    <div className="close-confirmation">
+                      <span className="material-symbols-outlined" onClick={handleClose}>close</span>
+                    </div>
+                    <p>Are you sure you want to delete this task? It's irreversible.</p>
+                    <div className="confirmation-buttons">
+                      <div>
+                        <button type="button" onClick={handleConfirm}>Confirm</button>
+                      </div>
+                      <div className="cancel-btn">
+                        <button type="button" onClick={handleClose}>Cancel</button>
                       </div>
                     </div>
-                  )}
                   </div>
+                )}
                 </div>
               </div>
             </div>
-            <div className="task-description">
-              <label htmlFor="taskDescription">Description</label>
-              <textarea  id="taskDescription" placeholder="Add a description..." />
-            </div>
-            <div className="save-task">
-              <button onClick={handleSaveTask}>Save</button>
-            </div>
-          </form>
-        </div>
+          </div>
+          <div className="task-description">
+            <label htmlFor="taskDescription">Description</label>
+            <textarea  id="taskDescription" placeholder="Add a description..." />
+          </div>
+          <div className="save-task">
+            <button onClick={handleSaveTask}>Save</button>
+          </div>
+        </form>
       </div>
-    </>
+    </div>
   );
 }
 

@@ -14,22 +14,18 @@
 .task-actions button:active, .save-task button:active {
   transform: scale(0.95);
 }
-
 .no-click {
   pointer-events: none;
 }
 .confirmation-content {
   pointer-events: auto;
 }
-
-
 .animation {
   animation-name: shake;
   animation-duration: 0.5s;
   animation-iteration-count: 1;
   animation-timing-function: ease-in-out;
 }
-
 @keyframes shake {
   0% { transform: translateX(0); }
   25% { transform: translateX(-5px); }
@@ -37,8 +33,6 @@
   75% { transform: translateX(-5px); }
   100% { transform: translateX(0); }
 }
-
-
 .delete-confirmation {
   position: relative;
 }
@@ -215,6 +209,33 @@
   padding-right: 5px;
   font-weight: bold;
 }
+
+
+.deadline {
+  display: flex;
+  align-items: center;
+}
+.no-deadline {
+  display: flex;
+}
+.no-deadline > div {
+  display: flex;
+  align-items: center;
+}
+.no-deadline > div > input {
+  display: none;
+}
+.remove-deadline {
+  cursor: pointer;
+  display: inline-block;
+  margin-left: 5px;
+}
+
+.remove-deadline .material-symbols-outlined {
+  color: red;
+}
+
+
 .dropdown-tags {
   position: absolute;
   display: none;
@@ -279,7 +300,6 @@
 .list-header div .add-btn {
   display: flex;
 }
-
 hr {
   height: 1px;
   background-color: lightgrey;
@@ -301,14 +321,11 @@ hr {
 .dropdown:hover > .dropdown-content {
   display: block;
 }
-
 .dropdown:hover > .dropdown-tags {
   display: block;
   opacity: 1;
   transition: opacity 0.2s ease-in-out;
 }
-
-
 .dropdown-content ul,
 .dropdown-tags ul {
   padding: 0;
