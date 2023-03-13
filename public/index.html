@@ -20,7 +20,7 @@
                 <a class="closebtn navbar-nav hidden" onclick="closeNav()"><span class="material-symbols-outlined">close</span></a>
                 <a class="nav-link active" href="index.html">Lists</a>
                 <a class="nav-link" href="settings.html">Settings</a>
-                <button onclick="changeBackgroundColor()">Darkmode</button>
+                <!--<button onclick="changeBackgroundColor()">Darkmode</button>-->
           </div>
           <span class="openbtn hidden" onclick="openNav()"><span class="material-symbols-outlined">menu</span></span>
         </div>
@@ -38,7 +38,7 @@
       const navMenu = document.getElementById("navMenu");
       const menuOverlay = document.getElementById("menuOverlay");
 
-      function changeBackgroundColor() {
+      /*function changeBackgroundColor() {
         document.body.style.backgroundColor = "rgb(48, 54, 61)";
         document.body.style.color = "white";
 
@@ -59,7 +59,7 @@
 
         var modal = document.getElementsByClassName("modal")[0];
         modal.style.backgroundColor = "rgb(48, 54, 61)";
-      }
+      }*/
 
       function openNav() {
         navMenu.classList.add("nav-menu--open");

@@ -1,5 +1,29 @@
 @charset "utf-8";
 
+.date-picker-container {
+  position: absolute;
+  left: -200px;
+  top: 0;
+  width: 200px;
+  height: 200px;
+  background-color: white;
+  z-index: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+.deadline-container {
+  position: relative;
+}
+
+.add-deadline {
+  display: inline-block;
+  color: blue;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+
 .task-actions button, .save-task button {
   background-color: lightgray;
   border: none;
@@ -83,6 +107,7 @@
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
   margin: 15px 0;
   cursor: pointer;
+  height: 60px;
 }
 .task {
   padding: 10px;

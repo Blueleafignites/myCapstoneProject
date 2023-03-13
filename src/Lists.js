@@ -1,15 +1,6 @@
 /*
   Want to work on:
-  - User should be able to add tags, delete tags, or edit them. Set colors as well
-  - Maybe make it so that the user can remove a tag when hovering over it, an x appear and user can click on it
-  - Hovering over tags and priority should not show drop down, make the add button clickable
-
   - Resize lists for smaller screens
-  - Make it so that when a user doesn't set a deadline, the deadline input doesn't disappear
-  - Make it  so that editing a task and then pressing save doesn't add a new task
-  - Make it so that adding a task to the list, but then changing the list with the select menu, adds the task to the list that was selected, rather than where the add-btn was pressed
-  - Make it so that you can move tasks to different lists
-  - Make it so that the user must have a title in order to add a task
 */
 
 import { useState, useEffect, useRef } from "react";
@@ -43,8 +34,8 @@ const tasks = [
   { id: 3, title: "Read 50 Books", list: lists[2], priority: priorities[3].name, tags: [tags[0].name], deadline: new Date("2023-12-31") },
   { id: 4, title: "Clean Bedroom", list: lists[1], priority: priorities[2].name, tags: [tags[0].name, tags[5].name], deadline: null },
   { id: 5, title: "Homework", list: lists[0], priority: priorities[1].name, tags: [tags[1].name], deadline: new Date("2023-03-13") },
-  { id: 6, title: "Water the Plants", list: lists[1], priority: priorities[2].name, tags: [], deadline: null },
-  { id: 7, title: "Optometrist Appointment", list: lists[1], priority: [], tags: [tags[5].name], deadline: new Date("2023-03-22") },
+  { id: 6, title: "Water the Plants", list: lists[1], priority: [], tags: [], deadline: null },
+  { id: 7, title: "Optometrist Appointment", list: lists[1], priority: priorities[0].name, tags: [tags[5].name], deadline: new Date("2023-03-22") },
 ];
 
 function ListContainer({ title }) {
@@ -106,6 +97,11 @@ function ListContainer({ title }) {
         <div className="task-card" key={index} style={{ backgroundColor: `${priorities.find(p => p.name === task.priority)?.color}80` }} onClick={() => handleEditTask(task)}>
           <div className="task">
             <p>{task.title}</p>
+            {task.deadline && (
+              <p style={{ fontSize: "14px", color: "gray", marginTop: "6px" }}>
+                  Deadline: {new Date(task.deadline).toLocaleDateString('en-US', {timeZone: 'UTC'})}
+              </p>
+            )}
           </div>
         </div>
       ))}
@@ -123,7 +119,9 @@ function Modal({ onClose, modalRef, currentList, otherLists, task }) {
   const [taskTitle, setTaskTitle] = useState(task.title);
   const [selectedPriority, setSelectedPriority] = useState(priorities.find(p => p.name === task.priority) || null);
   const [selectedTags, setSelectedTags] = useState(task.tags.map(tagName => tags.find(t => t.name === tagName)));
-  const [selectedDeadline, setSelectedDeadline] = useState(task.deadline || new Date().toISOString().substr(0, 10));
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDeadline] = useState(task.deadline || new Date().toISOString().substr(0, 10));
+  const [deadlineText, setDeadlineText] = useState(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
 
   const handleTagSelection = (tag) => {
@@ -144,14 +142,29 @@ function Modal({ onClose, modalRef, currentList, otherLists, task }) {
 
   useEffect(() => {
     if (task.deadline) {
-      setSelectedDeadline(task.deadline.toISOString().substr(0, 10));
+      setShowDatePicker(true);
+      setDeadlineText(task.deadline.toISOString().substr(0, 10));
+    } else {
+      setDeadlineText(new Date().toISOString().substr(0, 10));
     }
   }, [task]);
-
-  const handleDeadlineChange = (event) => {
-    setSelectedDeadline(event.target.value);
+  
+  const handleAddClick = () => {
+    if (!task.deadline || deadlineText === null) {
+      setDeadlineText(new Date().toISOString().substr(0, 10));
+    }
+    setShowDatePicker(!showDatePicker);
   };
-
+  
+  const handleRemoveClick = () => {
+    setDeadlineText(null);
+    setShowDatePicker(false);
+  };
+  
+  const handleDeadlineChange = (event) => {
+    setDeadlineText(event.target.value);
+  };
+  
   function handleSaveTask() {
     const newTask = {
       id: tasks.length + 1,
@@ -275,15 +288,17 @@ function Modal({ onClose, modalRef, currentList, otherLists, task }) {
                 </div>
               </div>
 
-                <div className="deadline">
-                  <label htmlFor="deadline">Deadline:</label>
-                  {task.deadline !== null && (
-                    <input type="date" id="deadline" name="deadline" value={selectedDeadline} onChange={handleDeadlineChange} />
-                  )}
-                  <div>
-                    <span className="material-symbols-outlined">add</span>
-                  </div>
+              <div className="deadline">
+                <label htmlFor="deadline">Deadline:</label>
+                {showDatePicker && (
+                  <input type="date" id="deadline" name="deadline" value={deadlineText} onChange={handleDeadlineChange} />
+                )}
+                <div>
+                  <span className="material-symbols-outlined" onClick={showDatePicker ? handleRemoveClick : handleAddClick}>
+                    {showDatePicker ? 'remove' : 'add'}
+                  </span>
                 </div>
+              </div>
               
               <div className="task-list">
                 <label htmlFor="listSelect">Add to list: </label>
