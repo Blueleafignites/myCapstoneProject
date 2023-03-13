@@ -98,8 +98,8 @@ function ListContainer({ title }) {
           <div className="task">
             <p>{task.title}</p>
             {task.deadline && (
-              <p style={{ fontSize: "14px", color: "gray", marginTop: "6px" }}>
-                  Deadline: {new Date(task.deadline).toLocaleDateString('en-US', {timeZone: 'UTC'})}
+              <p className="card-date">
+                Deadline: {new Date(task.deadline).toLocaleDateString('en-US', {timeZone: 'UTC'})}
               </p>
             )}
           </div>

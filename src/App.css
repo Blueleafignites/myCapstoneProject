@@ -109,11 +109,16 @@
   cursor: pointer;
   height: 60px;
 }
+.card-date {
+  font-size: 14px;
+  color: gray;
+  margin-top: 6px;
+}
 .task {
   padding: 10px;
   text-align: left;
 }
-.task p {
+p {
   margin: 0;
 }
 .modal-overlay {
@@ -357,7 +362,6 @@ hr {
 }
 .dropdown-content li {
   color: black;
-  background-color: white;
   min-width: 75px;
   padding: 5px 15px;
   text-decoration: none;
@@ -372,7 +376,7 @@ hr {
 }
 .dropdown-content .delete,
 .delete-btn button{
-  color: red;
+  color: red !important;
 }
 .dropdown:hover > .drop-btn, 
 .add-btn:hover {
