@@ -1,0 +1,28 @@
+@media (prefers-color-scheme: dark) {
+    body, .task-title input, .navbar-brand, .nav-link, .dropdown-content li, .dropdown-tags li, #listSelect, #deadline  { 
+        color: white !important;
+    }
+    body, .list, .modal, .task-description textarea, 
+    .task-title input, .dropdown-content, .dropdown-tags, 
+    .dropdown-tags li, #listSelect, #deadline { 
+        background: #333333; 
+    }
+    .dropdown-content li:hover,
+    .dropdown-tags li:hover {
+        background-color: grey;
+    }
+    .card-date { 
+        color: lightgrey !important; 
+    }
+    hr {  
+        background-color: grey; 
+    }
+    .task-description textarea, .deadline input, .task-list select  {
+        border: solid 1px grey;
+    }
+    .tagDrop-btn, 
+    .tagDrop-btn,
+    .add-deadline-btn {
+    background-color: grey;
+    }
+}

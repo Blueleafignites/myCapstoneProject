@@ -1,8 +1,3 @@
-/*
-  Want to work on:
-  - Resize lists for smaller screens
-*/
-
 import { useState, useEffect, useRef } from "react";
 import './App.css';
 
@@ -96,7 +91,7 @@ function ListContainer({ title }) {
       {tasks.filter((task) => task.list === currentList).map((task, index) => (
         <div className="task-card" key={index} style={{ backgroundColor: `${priorities.find(p => p.name === task.priority)?.color}80` }} onClick={() => handleEditTask(task)}>
           <div className="task">
-            <p>{task.title}</p>
+            <p className="card-title">{task.title}</p>
             {task.deadline && (
               <p className="card-date">
                 Deadline: {new Date(task.deadline).toLocaleDateString('en-US', {timeZone: 'UTC'})}
@@ -293,7 +288,7 @@ function Modal({ onClose, modalRef, currentList, otherLists, task }) {
                 {showDatePicker && (
                   <input type="date" id="deadline" name="deadline" value={deadlineText} onChange={handleDeadlineChange} />
                 )}
-                <div>
+                <div className="add-deadline-btn">
                   <span className="material-symbols-outlined" onClick={showDatePicker ? handleRemoveClick : handleAddClick}>
                     {showDatePicker ? 'remove' : 'add'}
                   </span>
@@ -359,11 +354,13 @@ function Modal({ onClose, modalRef, currentList, otherLists, task }) {
 
 function Lists() {
   return (
-    <>
-      <ListContainer title="Today" />
-      <ListContainer title={month} />
-      <ListContainer title={year} />
-    </>
+    <div class="scroll-container">
+      <div className="list-container">
+        <ListContainer title="Today" />
+        <ListContainer title={month} />
+        <ListContainer title={year} />
+      </div>
+    </div>
   );
 }
 
