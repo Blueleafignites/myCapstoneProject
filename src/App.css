@@ -1,82 +1,22 @@
 @charset "utf-8";
 
-.task-actions button, .save-task button {
-  background-color: lightgray;
-  border: none;
-  padding: 10px 20px;
+
+.card-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.tag-list {
+  display: flex;
+}
+.card-tags {
+  width: 18px;
+  height: 18px;
+  margin-left: 5px;
   border-radius: 5px;
-  cursor: pointer;
-  transition: transform 0.1s ease-in-out;
 }
-.task-actions button:hover, .save-task button:hover {
-  background-color: rgb(180, 180, 180);
-}
-.task-actions button:active, .save-task button:active {
-  transform: scale(0.95);
-}
-.no-click {
-  pointer-events: none;
-}
-.confirmation-content {
-  pointer-events: auto;
-}
-.animation {
-  animation-name: shake;
-  animation-duration: 0.5s;
-  animation-iteration-count: 1;
-  animation-timing-function: ease-in-out;
-}
-@keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  50% { transform: translateX(5px); }
-  75% { transform: translateX(-5px); }
-  100% { transform: translateX(0); }
-}
-.delete-confirmation {
-  position: relative;
-}
-.confirmation-content {
-  position: absolute;
-  text-align: center;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
-  padding: 10px;
-  border-radius: 10px;
-  background-color: white;
-  width: 425px;
-  z-index: 999;
-  left: -400px;
-}
-.confirmation-content p {
-  padding: 5px 15px;
-  font-size: 14px;
-}
-.confirmation-content .close-confirmation {
-  text-align: right;
-}
-.confirmation-buttons {
-  display: flex;
-  justify-content: center;
-}
-.cancel-btn {
-  margin-left: 8px;
-}
-.task-container {
-  display: flex;
-}
-.task-info {
-  flex: 1;
-}
-.task-actions {
-  width: 100px;
-}
-.task-actions {
-  margin-top: 10px;
-  text-align: right;
-}
-.actions-button button {
-  margin: 5px 0;
-}
+
 .task-card {
   background-color: rgba(0, 175, 255, 0.5);
   border-radius: 10px;
@@ -127,15 +67,7 @@ p {
   margin-top: 10px;
   text-align: center;
 }
-.save-task button, 
-.actions-button button {
-  border: none;
-  background-color: lightgray;
-  width: 100px;
-  height: 40px;
-  cursor: pointer;
-  font-weight: bold;
-}
+
 .task-description textarea {
   border: solid 1px lightgrey;
   width: 98.5%;
@@ -166,60 +98,6 @@ p {
   border: none;
   height: 30px;
 }
-.taskPriority {
-  padding-top: 10px;
-}
-.taskPriority, 
-.taskTags, 
-.deadline, 
-.task-list {
-  padding-bottom: 10px;
-}
-.task-header,
-.taskTags, 
-.taskPriority,
-.add-tags {
-  display: flex;
-  align-items: center;
-}
-.tag, .priority {
-  display: inline-block;
-  margin-right: 5px;
-  padding: 5px;
-  border-radius: 5px;
-  background-color: var(--color);
-  font-size: 14px;
-}
-.tagDrop-btn, 
-.tagDrop-btn,
-.add-deadline-btn {
-  background-color: lightgray;
-  border-radius: 5px;
-}
-.deadline input {
-  margin-right: 5px;
-}
-.deadline input, 
-.task-list select  {
-  border: solid 1px lightgrey;
-  border-radius: 5px;
-  width: 110px;
-  height: 25px;
-  text-align: center;
-}
-.tagDrop-btn,
-.tagDrop-btn,
-.add-deadline-btn   {
-  display: flex;
-}
-.taskTags .tags-label,
-.taskPriority .priority-label,
-.deadline label,
-.task-list label,
-.task-description label {
-  padding-right: 5px;
-  font-weight: bold;
-}
 
 
 .deadline {
@@ -242,33 +120,8 @@ p {
   margin-left: 5px;
 }
 
-
-.dropdown-tags {
-  position: absolute;
-  display: none;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
-  right: -110px;
-  top: 30px;
-  background-color: white;
-  padding: 0 5px;
-  border-radius: 10px;
-  z-index: 999;
-}
-.dropdown-tags li {
-  color: black;
-  background-color: white;
-  min-width: 100px;
-  padding: 5px 15px;
-  text-decoration: none;
-  display: block;
-  font-size: 14px;
-}
-.dropdown-tags label {
-  cursor: pointer;
-}
 .list {
   width: 350px;
-  height: 88vh;
   text-align: center;
   display: inline-block;
   background-color: white;
@@ -316,7 +169,6 @@ hr {
   display: inline-block;
 }
 .dropdown-content {
-  display: none;
   position: absolute;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
   left: -75px;
@@ -324,17 +176,37 @@ hr {
   padding: 0 5px;
   border-radius: 10px;
 }
-.dropdown:hover > .dropdown-content {
-  display: block;
+.dropdown-tags {
+  position: absolute;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
+  top: 30px;
+  background-color: white;
+  padding: 0 5px;
+  border-radius: 10px;
+  z-index: 999;
 }
-.dropdown:hover > .dropdown-tags {
-  display: block;
-  opacity: 1;
-  transition: opacity 0.2s ease-in-out;
+.dropdown-tags li {
+  color: black;
+  background-color: white;
+  min-width: 150px;
+  text-decoration: none;
+  font-size: 14px;
+  display: flex;
+  padding: 3px;
+  align-items: center;
+  justify-content: space-between;
+}
+.dropdown-tags li label {
+  display: flex;
+  align-items: center;
+}
+.dropdown-tags label {
+  cursor: pointer;
 }
 .dropdown-content ul,
 .dropdown-tags ul {
   padding: 0;
+  margin: 7px 0;
 }
 .dropdown-content li {
   color: black;
@@ -344,14 +216,17 @@ hr {
   display: block;
   font-size: 14px;
 }
-.dropdown-content li:hover,
-.dropdown-tags li:hover {
-  background-color: #f1f1f1;
+.dropdown-content li:hover {
+  background-color: lightgrey;
   border-radius: 10px;
   cursor: pointer;
 }
+.dropdown-tags label {
+  padding: 2px;
+}
+
 .dropdown-content .delete,
-.delete-btn button{
+.delete-btn button {
   color: red !important;
 }
 .dropdown:hover > .drop-btn, 
@@ -387,6 +262,12 @@ hr {
   .card-date {
     font-size: 14px !important;
     margin-top: 6px !important;
+  }
+}
+
+@media screen and (min-width: 750px) {
+  .list {
+    height: 88vh !important;
   }
 }
 

@@ -1,0 +1,170 @@
+@charset "utf-8";
+
+.taskPriority {
+    padding-top: 10px;
+}
+.taskPriority, 
+.taskTags, 
+.deadline, 
+.task-list {
+    padding-bottom: 10px;
+}
+.task-header,
+.taskTags, 
+.taskPriority,
+.add-tags {
+    display: flex;
+    align-items: center;
+}
+.tag, .priority {
+    display: inline-block;
+    margin-right: 5px;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+.dropdown-tags p {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 35px;
+}
+  
+.dropdown-tags hr {
+    margin: 0;
+}
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    margin-right: 8px;
+}
+.edit {
+    font-size: 20px !important;
+    padding: 5px;
+    border-radius: 5px;
+}
+.edit:hover {
+    background-color: lightgrey; 
+}
+.tagDrop-btn, 
+.tagDrop-btn,
+.add-deadline-btn {
+    background-color: lightgray;
+    border-radius: 5px;
+}
+.tagDrop-btn:hover, 
+.tagDrop-btn:hover,
+.add-deadline-btn:hover {
+    background-color: rgb(180, 180, 180);
+}
+.edit {
+    float: right;
+}
+.deadline input {
+    margin-right: 5px;
+}
+.deadline input, 
+.task-list select  {
+    border: solid 1px lightgrey;
+    border-radius: 5px;
+    width: 110px;
+    height: 25px;
+    text-align: center;
+}
+.tagDrop-btn,
+.tagDrop-btn,
+.add-deadline-btn   {
+    display: flex;
+}
+.taskTags .tags-label,
+.taskPriority .priority-label,
+.deadline label,
+.task-list label,
+.task-description label {
+    padding-right: 5px;
+    font-weight: bold;
+}
+.task-actions button, 
+.save-task button {
+    background-color: lightgray;
+    border: none;
+    padding: 10px 20px;
+    width: 100px;
+    height: 40px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.1s ease-in-out;
+}
+.task-actions button:hover, 
+.save-task button:hover {
+    background-color: rgb(180, 180, 180);
+}
+.task-actions button:active, 
+.save-task button:active {
+    transform: scale(0.95);
+}
+.no-click {
+    pointer-events: none;
+}
+.confirmation-content {
+pointer-events: auto;
+}
+.animation {
+    animation-name: shake;
+    animation-duration: 0.5s;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
+}
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+}
+.delete-confirmation {
+    position: relative;
+}
+.confirmation-content {
+    position: absolute;
+    text-align: center;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 10px;
+    background-color: white;
+    width: 425px;
+    z-index: 999;
+    left: -400px;
+}
+.confirmation-content p {
+    padding: 5px 15px;
+    font-size: 14px;
+}
+.confirmation-content .close-confirmation {
+    text-align: right;
+}
+.confirmation-buttons {
+    display: flex;
+    justify-content: center;
+}
+.cancel-btn {
+    margin-left: 10px;
+}
+.task-container {
+    display: flex;
+}
+.task-info {
+    flex: 1;
+}
+.task-actions {
+    width: 100px;
+}
+.task-actions {
+    margin-top: 10px;
+    text-align: right;
+}
+.actions-button button {
+    margin-bottom: 10px;
+}
