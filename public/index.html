@@ -12,41 +12,7 @@
 </head>
 
 <body>
-  <header>
-    <nav class="navbar">
-      <div class="nav-container">
-        <div class="logo">
-          <a href="login.html"><img class="navIcon" src="ravenicon.png" alt="Icon" /></a>
-          <a class="navbar-brand" href="login.html">Raven BuJo</a>
-        </div>
-        <div class="navbar-nav sidenav nav-menu" id="navMenu">
-          <a class="closebtn navbar-nav hidden" onclick="closeNav()"><span
-              class="material-symbols-outlined">close</span></a>
-          <a class="nav-link active" href="index.html">Lists</a>
-          <a class="nav-link" href="settings.html">Settings</a>
-        </div>
-        <span class="openbtn hidden" onclick="openNav()"><span class="material-symbols-outlined">menu</span></span>
-      </div>
-    </nav>
-  </header>
-  <div class="overlay" onclick="closeNav()" id="menuOverlay"></div>
-  <main>
-    <div id="root"></div>
-  </main>
-  <script>
-    const navMenu = document.getElementById("navMenu");
-    const menuOverlay = document.getElementById("menuOverlay");
-
-    function openNav() {
-      navMenu.classList.add("nav-menu--open");
-      menuOverlay.classList.add("overlay--visible");
-    }
-
-    function closeNav() {
-      navMenu.classList.remove("nav-menu--open");
-      menuOverlay.classList.remove("overlay--visible");
-    }
-  </script>
+  <div id="root"></div>
 </body>
 
 </html>

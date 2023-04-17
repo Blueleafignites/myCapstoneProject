@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import Modal from "./Task";
-import { tasks, priorities, tags, getLists } from "./data";
 import './App.css';
 
 
-function ListContainer({ title }) {
+function ListContainer({ title, priorities, tags, lists, tasks }) {
   const modalRef = useRef();
   const overlayId = `modalOverlay-${title}`;
 
@@ -15,16 +14,15 @@ function ListContainer({ title }) {
   const [showListActions, setShowListActions] = useState(false);
 
   useEffect(() => {
-    const allLists = getLists();
-    const otherLists = allLists.filter(list => list.title !== title);
+    const otherLists = lists.filter(list => list.title !== title);
     setOtherLists(otherLists);
-  }, [title]);
+  }, [title, lists]);
 
   const handleEditTask = (task) => {
     setTask(task);
     setShowModal(true);
     document.getElementById(overlayId).style.display = "block";
-  };
+  }; 
 
   const handleAddTask = () => {
     setTask({ title: '', priority: [], tags: [], deadline: null });
@@ -32,19 +30,23 @@ function ListContainer({ title }) {
     document.getElementById(overlayId).style.display = "block";
   };
 
+  function handleSortListClick() {
+    
+  }
+  
   const handleDeleteAll = () => {
 
   };
 
   const handleListActionsClick = () => {
     setShowListActions(!showListActions);
-  };
+};
 
   const handleCloseModal = () => {
     setShowModal(false);
     document.getElementById(overlayId).style.display = "none";
   };
-
+  
   const getTagColor = (tagName) => {
     const tag = tags.find((tag) => tag.name === tagName);
     return tag ? tag.color : "#000000";
@@ -66,7 +68,7 @@ function ListContainer({ title }) {
           {showListActions && (
             <div className="dropdown-content">
               <ul>
-                <li>Sort List</li>
+                <li onClick={handleSortListClick}>Sort List</li>
                 <li>Move All</li>
                 <li>Archive All</li>
                 <li className="delete" onClick={handleDeleteAll}>Delete All</li>
@@ -89,7 +91,7 @@ function ListContainer({ title }) {
             </div>
             {task.deadline && (
               <p className="card-date">
-                Deadline: {new Date(task.deadline).toLocaleDateString('en-US', { timeZone: 'UTC' })}
+                Deadline: {new Date(task.deadline).toLocaleDateString('en-US', {timeZone: 'UTC'})}
               </p>
             )}
           </div>
@@ -97,7 +99,7 @@ function ListContainer({ title }) {
       ))}
       {showModal && (
         <>
-          <Modal onClose={handleCloseModal} modalRef={modalRef} currentList={currentList} otherLists={otherLists} task={task} />
+          <Modal onClose={handleCloseModal} modalRef={modalRef} currentList={currentList} otherLists={otherLists} task={task}/>
         </>
       )}
       <div id={overlayId} className="modal-overlay" onClick={() => handleCloseModal()}></div>
@@ -105,8 +107,8 @@ function ListContainer({ title }) {
   );
 }
 
-function Lists() {
-  const listTitles = getLists();
+function Lists({ lists }) {
+  const listTitles = lists;
 
   return (
     <div className="scroll-container">

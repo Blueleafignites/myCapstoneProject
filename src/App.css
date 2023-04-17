@@ -180,6 +180,7 @@ hr {
   position: absolute;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
   top: 30px;
+  min-width: 175px;
   background-color: white;
   padding: 0 5px;
   border-radius: 10px;
@@ -188,7 +189,6 @@ hr {
 .dropdown-tags li {
   color: black;
   background-color: white;
-  min-width: 150px;
   text-decoration: none;
   font-size: 14px;
   display: flex;

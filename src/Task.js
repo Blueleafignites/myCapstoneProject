@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import { tasks, priorities, tags, } from "./data";
 import './Task.css';
 
-function Modal({ onClose, modalRef, currentList, otherLists, task }) {
+function Modal({ onClose, modalRef, currentList, otherLists, task,  priorities, tags, tasks }) {
     const [taskTitle, setTaskTitle] = useState(task.title);
     const [selectedPriority, setSelectedPriority] = useState(priorities.find(p => p.name === task.priority) || null);
     const [selectedTags, setSelectedTags] = useState(task.tags.map(tagName => tags.find(t => t.name === tagName)));
@@ -11,6 +10,11 @@ function Modal({ onClose, modalRef, currentList, otherLists, task }) {
     const [deadlineText, setDeadlineText] = useState(null);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [showPriorityDropdown, setShowPriorityDropdown] = useState(false);
+    const [showEditPriorityDropdown, setShowEditPriorityDropdown] = useState(false);
+    const [clickedPriority, setClickedPriority] = useState(null);
+    const [editedPriorityName, setEditedPriorityName] = useState("");
+    const [hasChanges, setHasChanges] = useState(false);
+
     const [showTagDropdown, setShowTagDropdown] = useState(false);
 
     const handlePrioritySelection = (priority) => {
@@ -19,10 +23,6 @@ function Modal({ onClose, modalRef, currentList, otherLists, task }) {
         } else {
             setSelectedPriority(priority);
         }
-    };
-
-    const handleEditPriority = () => {
-
     };
 
     const handleTagSelection = (tag) => {
@@ -38,6 +38,33 @@ function Modal({ onClose, modalRef, currentList, otherLists, task }) {
             setShowTagDropdown(false);
         }
         setShowPriorityDropdown(!showPriorityDropdown);
+    };
+
+    const handleEditPriorityDropdown = (priority) => {
+        setClickedPriority(priority);
+        setEditedPriorityName(priority.name);
+        setShowPriorityDropdown(false);
+        setShowEditPriorityDropdown(true);
+    };
+
+    const handleConfirmEdit = () => {
+        if (hasChanges) {
+            setHasChanges(false);
+        }
+        setShowEditPriorityDropdown(false);
+        setShowPriorityDropdown(true);
+    };
+
+    const handleArrowBackClick = () => {
+        setHasChanges(false);
+        setEditedPriorityName("");
+        setShowEditPriorityDropdown(false);
+        setShowPriorityDropdown(true);
+    };
+
+    const handleCloseEditDropdown = () => {
+        setShowEditPriorityDropdown(false);
+        setShowPriorityDropdown(false);
     };
 
     const handleAddTagClick = () => {
@@ -56,9 +83,10 @@ function Modal({ onClose, modalRef, currentList, otherLists, task }) {
     }, []);
 
     const handleDocumentClick = (e) => {
-        if (!e.target.closest(".dropdown")) {
+        if (!e.target.closest(".dropdown") && !e.target.closest(".dropdown-tags")) {
             setShowPriorityDropdown(false);
             setShowTagDropdown(false);
+            setShowEditPriorityDropdown(false);
         }
     };
 
@@ -157,7 +185,14 @@ function Modal({ onClose, modalRef, currentList, otherLists, task }) {
                                 <div className="dropdown">
                                     {showPriorityDropdown && (
                                         <div className="dropdown-tags">
-                                            <p>Priorities</p>
+                                            <div className="dropdown-header">
+                                                <div className="dropdown-title">
+                                                    <p>Priorities</p>
+                                                </div>
+                                                <div className="dropdown-close">
+                                                    <span className="material-symbols-outlined" onClick={handleCloseEditDropdown}>close</span>
+                                                </div>
+                                            </div>
                                             <hr></hr>
                                             <ul>
                                                 {priorities.map((priority, index) => (
@@ -166,10 +201,55 @@ function Modal({ onClose, modalRef, currentList, otherLists, task }) {
                                                             <input type="checkbox" checked={selectedPriority != null && selectedPriority.name === priority.name} onChange={() => handlePrioritySelection(priority)} />
                                                             <span className="priority" style={{ background: priority.color }}>{priority.name}</span>
                                                         </label>
-                                                        <span className="material-symbols-outlined edit" onClick={() => handleEditPriority(priority)}>edit</span>
+                                                        <span className="material-symbols-outlined edit" onClick={() => handleEditPriorityDropdown(priority)}>edit</span>
                                                     </li>
                                                 ))}
                                             </ul>
+                                        </div>
+                                    )}
+                                    {showEditPriorityDropdown && (
+                                        <div className="dropdown-tags">
+                                            <div className="header-container">
+                                                <div className="arrow-back">
+                                                    <span className="material-symbols-outlined" onClick={handleArrowBackClick}>arrow_back</span>
+                                                </div>
+                                                <div className="dropdown-title-edit">
+                                                    <p>Edit Priority</p>
+                                                </div>
+                                                <div className="dropdown-close">
+                                                    <span className="material-symbols-outlined" onClick={handleCloseEditDropdown}>close</span>
+                                                </div>
+                                            </div>
+                                            <hr></hr>
+                                            {clickedPriority && (
+                                                <div className="edit-tag">
+                                                    <span className="priority" style={{ background: clickedPriority.color }}>
+                                                        {clickedPriority.name}
+                                                    </span>
+                                                </div>
+                                            )}
+                                            <label>Title
+                                                <input
+                                                    type="text"
+                                                    value={editedPriorityName}
+                                                    onChange={(e) => {
+                                                        setEditedPriorityName(e.target.value);
+                                                        setHasChanges(true);
+                                                        if (clickedPriority) {
+                                                            const newPriority = { ...clickedPriority, name: e.target.value };
+                                                            setClickedPriority(newPriority);
+                                                        }
+                                                    }}
+                                                />
+                                            </label>
+                                            <div className="dropdown-edit-buttons">
+                                                <div>
+                                                    <button type="button" onClick={handleConfirmEdit}>Save</button>
+                                                </div>
+                                                <div className="cancel-btn">
+                                                    <button type="button">Delete</button>
+                                                </div>
+                                            </div>
                                         </div>
                                     )}
                                     <div className="add-tags">
@@ -191,7 +271,9 @@ function Modal({ onClose, modalRef, currentList, otherLists, task }) {
                                 <div className="dropdown">
                                     {showTagDropdown && (
                                         <div className="dropdown-tags">
-                                            <p>Tags</p>
+                                            <div className="dropdown-close">
+                                                <span className="material-symbols-outlined" onClick={handleCloseEditDropdown}>close</span>
+                                            </div>
                                             <hr></hr>
                                             <ul>
                                                 {tags.map((tag, index) => (
@@ -200,7 +282,7 @@ function Modal({ onClose, modalRef, currentList, otherLists, task }) {
                                                             <input type="checkbox" checked={selectedTags.includes(tag)} onChange={() => handleTagSelection(tag)} />
                                                             <span className="tag" style={{ background: tag.color }}>{tag.name}</span>
                                                         </label>
-                                                        <span className="material-symbols-outlined edit" onClick={() => handleEditPriority(tag)}>edit</span>
+                                                        <span className="material-symbols-outlined edit">edit</span>
                                                     </li>
                                                 ))}
                                             </ul>
