@@ -14,7 +14,7 @@ function ListContainer({ title, priorities, tags, lists, tasks }) {
   const [showListActions, setShowListActions] = useState(false);
 
   useEffect(() => {
-    const otherLists = lists.filter(listTitle => listTitle !== title);
+    const otherLists = lists.filter(list => list.title !== title);
     setOtherLists(otherLists);
   }, [title, lists]);
 
@@ -99,7 +99,7 @@ function ListContainer({ title, priorities, tags, lists, tasks }) {
       ))}
       {showModal && (
         <>
-          <Modal onClose={handleCloseModal} modalRef={modalRef} currentList={currentList} otherLists={otherLists} task={task}/>
+          <Modal onClose={handleCloseModal} modalRef={modalRef} currentList={currentList} otherLists={otherLists} task={task} priorities={priorities} tags={tags} tasks={tasks} />
         </>
       )}
       <div id={overlayId} className="modal-overlay" onClick={() => handleCloseModal()}></div>

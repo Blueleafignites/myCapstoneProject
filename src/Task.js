@@ -44,7 +44,7 @@ function Modal({ onClose, modalRef, currentList, otherLists, task,  priorities, 
         setClickedPriority(priority);
         setEditedPriorityName(priority.name);
         setShowPriorityDropdown(false);
-        setShowEditPriorityDropdown(true);
+        setShowEditPriorityDropdown(!showEditPriorityDropdown);
     };
 
     const handleConfirmEdit = () => {
@@ -59,7 +59,7 @@ function Modal({ onClose, modalRef, currentList, otherLists, task,  priorities, 
         setHasChanges(false);
         setEditedPriorityName("");
         setShowEditPriorityDropdown(false);
-        setShowPriorityDropdown(true);
+        setShowPriorityDropdown(!showEditPriorityDropdown);
     };
 
     const handleCloseEditDropdown = () => {

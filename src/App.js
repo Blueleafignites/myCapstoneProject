@@ -1,10 +1,10 @@
 import React from 'react';
-import Lists from './Lists';
+import Data from './data';
 
 function App() {
   return (
     <>
-      <Lists />
+      <Data />
     </>
   );
 }
