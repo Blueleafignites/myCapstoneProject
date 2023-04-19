@@ -14,7 +14,7 @@ function ListContainer({ title, priorities, tags, lists, tasks }) {
   const [showListActions, setShowListActions] = useState(false);
 
   useEffect(() => {
-    const otherLists = lists.filter(list => list.title !== title);
+    const otherLists = lists.filter(listTitle => listTitle !== title);
     setOtherLists(otherLists);
   }, [title, lists]);
 
@@ -107,14 +107,18 @@ function ListContainer({ title, priorities, tags, lists, tasks }) {
   );
 }
 
-function Lists({ lists }) {
-  const listTitles = lists;
+function Lists({ priorities, tags, tasks }) {
+  const currentDate = new Date();
+  const month = currentDate.toLocaleString('default', { month: 'long' });
+  const year = currentDate.getFullYear();
+
+  const listTitles = ["Today", month, year];
 
   return (
     <div className="scroll-container">
       <div className="list-container">
         {listTitles.map(title => (
-          <ListContainer key={title} title={title} />
+          <ListContainer key={title} title={title} priorities={priorities} tags={tags} lists={listTitles} tasks={tasks}  />
         ))}
       </div>
     </div>

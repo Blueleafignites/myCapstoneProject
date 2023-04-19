@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import ListContainer from "./Lists";
 import Lists from "./Lists";
-import Modal from "./Task";
 
-function MyComponent() {
+function Data() {
     const [priorities, setPriorities] = useState([]);
     const [tags, setTags] = useState([]);
-    const [lists, setLists] = useState([]);
     const [tasks, setTasks] = useState([]);
 
     useEffect(() => {
@@ -27,14 +24,6 @@ function MyComponent() {
     }, []);
 
     useEffect(() => {
-        axios.get('/api/lists')
-            .then(response => {
-                setLists(response.data);
-            })
-            .catch(error => console.error('Error retrieving lists:', error));
-    }, []);
-
-    useEffect(() => {
         axios.get('/api/tasks')
             .then(response => {
                 setTasks(response.data);
@@ -44,12 +33,10 @@ function MyComponent() {
 
     return (
         <>
-            <ListContainer priorities={priorities} tags={tags} lists={lists} tasks={tasks} />
-            <Lists lists={lists} />
-            <Modal priorities={priorities} tags={tags} tasks={tasks} />
+            <Lists priorities={priorities} tags={tags} tasks={tasks} />
         </>
 
     );
 }
 
-export default MyComponent;
+export default Data;

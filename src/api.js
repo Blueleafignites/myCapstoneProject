@@ -82,18 +82,6 @@ app.get('/tags', async (req, res) => {
     }
 });
 
-app.get('/lists', async (req, res) => {
-    try {
-        const lists = await List.findAll({
-            attributes: ['list_name']
-        });
-        res.send(lists);
-    } catch (error) {
-        console.log(error);
-        res.status(500).send('Server error');
-    }
-});
-
 app.listen(port, async () => {
     console.log(`Server running on port ${port}`);
     try {
