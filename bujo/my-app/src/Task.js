@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import './Task.css';
 
-function Modal({ onClose, modalRef, currentList, otherLists, task,  priorities, tags, tasks }) {
+function Modal({ onClose, modalRef, task, priorities, tags, lists, tasks }) {
     const [taskTitle, setTaskTitle] = useState(task.title);
     const [selectedPriority, setSelectedPriority] = useState(priorities.find(p => p.name === task.priority) || null);
     const [selectedTags, setSelectedTags] = useState(task.tags.map(tagName => tags.find(t => t.name === tagName)));
     const [showDatePicker, setShowDatePicker] = useState(false);
-    const [selectedDeadline] = useState(task.deadline || new Date().toISOString().substr(0, 10));
+    //const [selectedDeadline] = useState(task.deadline || new Date().toISOString().substr(0, 10));
     const [deadlineText, setDeadlineText] = useState(null);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [showPriorityDropdown, setShowPriorityDropdown] = useState(false);
@@ -116,17 +116,6 @@ function Modal({ onClose, modalRef, currentList, otherLists, task,  priorities, 
     };
 
     function handleSaveTask() {
-        const newTask = {
-            id: task.id,
-            title: taskTitle,
-            list: currentList,
-            priority: selectedPriority?.name || null,
-            tags: selectedTags.map(tag => tag.name),
-            deadline: showDatePicker ? selectedDeadline : null,
-        };
-
-        const taskIndex = tasks.findIndex(t => t.id === task.id);
-        tasks[taskIndex] = newTask;
 
         onClose();
     }
@@ -318,12 +307,7 @@ function Modal({ onClose, modalRef, currentList, otherLists, task,  priorities, 
                             <div className="task-list">
                                 <label htmlFor="listSelect">Add to list: </label>
                                 <select id="listSelect">
-                                    <option value={currentList}>{currentList}</option>
-                                    {otherLists.map((list) => (
-                                        <option value={list} key={list}>
-                                            {list}
-                                        </option>
-                                    ))}
+
                                 </select>
                             </div>
                         </div>

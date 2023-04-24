@@ -12,25 +12,33 @@ function Data() {
       const res = await axios.get('http://localhost:3000/priorities');
       setPriorities(res.data);
     };
-
+  
     const fetchTags = async () => {
       const res = await axios.get('http://localhost:3000/tags');
       setTags(res.data);
     };
-
+  
     const fetchTasks = async () => {
       const res = await axios.get('http://localhost:3000/tasks');
       setTasks(res.data);
     };
-
+  
     fetchPriorities();
     fetchTags();
     fetchTasks();
   }, []);
 
+  const deleteTasksByListId = async (listId) => {
+    try {
+      await axios.delete(`http://localhost:3000/lists/${listId}/tasks`);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
-      <Lists priorities={priorities} tags={tags} tasks={tasks} />
+      <Lists priorities={priorities} tags={tags} tasks={tasks} setTasks={setTasks} deleteTasksByListId={deleteTasksByListId}/>
     </>
   );
 }
