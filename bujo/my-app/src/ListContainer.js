@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import Modal from "./Task";
 import './App.css';
 
-function ListContainer({ title, priorities, setPriorities, tags, setTags, lists, listId, tasks, setTasks, deleteTasksByListId }) {
+function ListContainer({ title, priorities, setPriorities, tags, setTags, lists, listId, tasks, setTasks, deleteTasksByListId, deleteTaskById }) {
   const modalRef = useRef();
   const overlayId = `modalOverlay-${title}`;
 
@@ -86,7 +86,7 @@ function ListContainer({ title, priorities, setPriorities, tags, setTags, lists,
       ))}
       {showModal && (
         <>
-          <Modal onClose={handleCloseModal} modalRef={modalRef} task={task} priorities={priorities} setPriorities={setPriorities} tags={tags} setTags={setTags} lists={lists} tasks={tasks} />
+          <Modal onClose={handleCloseModal} modalRef={modalRef} task={task} priorities={priorities} setPriorities={setPriorities} tags={tags} setTags={setTags} lists={lists} setTasks={setTasks} deleteTaskById={deleteTaskById} />
         </>
       )}
       <div id={overlayId} className="modal-overlay" onClick={() => handleCloseModal()}></div>

@@ -3,7 +3,7 @@ import PriorityDropdown from "./labels";
 import TagDropdown from "./tags";
 import './Task.css';
 
-function Modal({ onClose, modalRef, task, priorities, setPriorities, tags, setTags, lists, tasks }) {
+function Modal({ onClose, modalRef, task, priorities, setPriorities, tags, setTags, lists, setTasks, deleteTaskById }) {
     const [taskTitle, setTaskTitle] = useState(task.task_title);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [selectedList, setSelectedList] = useState(task.list_id);
@@ -18,21 +18,28 @@ function Modal({ onClose, modalRef, task, priorities, setPriorities, tags, setTa
     }
 
     function handleDeleteTask() {
-        setShowConfirmation(true);
+        setShowConfirmation(!showConfirmation);
         document.addEventListener('click', handleOutsideClick);
         document.body.classList.add('no-click');
     }
 
     function handleClose() {
-        setShowConfirmation(false);
+        setShowConfirmation(!showConfirmation);
         document.body.classList.remove('no-click');
     }
 
-    function handleConfirm() {
-        onClose();
-        setShowConfirmation(false);
-        document.body.classList.remove('no-click');
-    }
+    async function handleConfirmDelete() {
+        try {
+          await deleteTaskById(task.task_id);
+          setTasks((prevState) => prevState.filter((t) => t.task_id !== task.task_id));
+          onClose();
+          setShowConfirmation(false);
+          document.body.classList.remove('no-click');
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      
 
     let confirmationOpened = false;
 
@@ -65,11 +72,11 @@ function Modal({ onClose, modalRef, task, priorities, setPriorities, tags, setTa
                     <div className="task-info">
                         <div className="taskPriority">
                             <label htmlFor="taskPriority" className="priority-label">Priority:</label>
-                            <PriorityDropdown task={task} priorities={priorities} setPriorities={setPriorities} tags={tags} setTags={setTags} />
+                            <PriorityDropdown task={task} priorities={priorities} setPriorities={setPriorities} />
                         </div>
                         <div className="taskTags">
                             <label htmlFor="taskTags" class="tags-label">Tags: </label>
-                            <TagDropdown task={task} priorities={priorities} setPriorities={setPriorities} tags={tags} setTags={setTags} />
+                            <TagDropdown task={task} tags={tags} setTags={setTags} />
                         </div>
                         <div className="task-list">
                             <label htmlFor="listSelect">Add to list: </label>
@@ -85,10 +92,10 @@ function Modal({ onClose, modalRef, task, priorities, setPriorities, tags, setTa
                     </div>
                     <div className="task-actions">
                         <div className="actions-button">
-                            <button type="submit">Share</button>
+                            <button>Share</button>
                         </div>
                         <div className="actions-button">
-                            <button type="submit">Archive</button>
+                            <button>Archive</button>
                         </div>
                         <div className="actions-button delete-task">
                             <div className="delete-confirmation">
@@ -103,7 +110,7 @@ function Modal({ onClose, modalRef, task, priorities, setPriorities, tags, setTa
                                         <p>Are you sure you want to delete this task? It's irreversible.</p>
                                         <div className="confirmation-buttons">
                                             <div>
-                                                <button type="button" onClick={handleConfirm}>Confirm</button>
+                                                <button type="button" onClick={handleConfirmDelete}>Confirm</button>
                                             </div>
                                             <div className="cancel-btn">
                                                 <button type="button" onClick={handleClose}>Cancel</button>

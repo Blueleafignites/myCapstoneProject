@@ -31,12 +31,12 @@ app.get('/priorities', (req, res) => {
 });
 
 app.get('/tags', (req, res) => {
-    const query = 'SELECT * FROM tags';
+  const query = 'SELECT * FROM tags';
 
-    connection.query(query, (err, results) => {
-      if (err) throw err;
-      res.send(results);
-    });
+  connection.query(query, (err, results) => {
+    if (err) throw err;
+    res.send(results);
+  });
 });
 
 app.get('/tasks', (req, res) => {
@@ -63,6 +63,20 @@ app.delete('/lists/:listId/tasks', (req, res) => {
   connection.query(deleteTagsQuery, (err, results) => {
     if (err) throw err;
     connection.query(deleteTasksQuery, (err, results) => {
+      if (err) throw err;
+      res.send(results);
+    });
+  });
+});
+
+app.delete('/tasks/:taskId', (req, res) => {
+  const taskId = req.params.taskId;
+  const deleteTagsQuery = `DELETE FROM task_tags WHERE task_id = ${taskId}`;
+  const deleteTaskQuery = `DELETE FROM tasks WHERE task_id = ${taskId}`;
+
+  connection.query(deleteTagsQuery, (err, results) => {
+    if (err) throw err;
+    connection.query(deleteTaskQuery, (err, results) => {
       if (err) throw err;
       res.send(results);
     });

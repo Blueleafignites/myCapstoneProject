@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-function Dropdown({ task, priorities, setPriorities, tags, setTags }) {
+function TagDropdown({ task, tags, setTags }) {
     const [showTagDropdown, setShowTagDropdown] = useState(false);
     const [selectedTags, setSelectedTags] = useState(task.tags || []);
 
@@ -75,4 +75,4 @@ function Dropdown({ task, priorities, setPriorities, tags, setTags }) {
     );
 }
 
-export default Dropdown;
+export default TagDropdown;

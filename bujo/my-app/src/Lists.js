@@ -1,7 +1,7 @@
 import ListContainer from "./ListContainer";
 import './App.css';
 
-function Lists({ priorities, setPriorities, tags, setTags, tasks, setTasks, deleteTasksByListId }) {
+function Lists({ priorities, setPriorities, tags, setTags, tasks, setTasks, deleteTasksByListId, deleteTaskById }) {
   const currentDate = new Date();
   const month = currentDate.toLocaleString('default', { month: 'long' });
   const year = currentDate.getFullYear();
@@ -17,7 +17,7 @@ function Lists({ priorities, setPriorities, tags, setTags, tasks, setTasks, dele
       <div className="list-container">
         {listTitles.map(({ id, title }) => {
           return (
-            <ListContainer key={id} title={title} priorities={priorities} setPriorities={setPriorities} tags={tags} setTags={setTags} lists={listTitles} listId={id} tasks={tasks} setTasks={setTasks} deleteTasksByListId={deleteTasksByListId} />
+            <ListContainer key={id} title={title} priorities={priorities} setPriorities={setPriorities} tags={tags} setTags={setTags} lists={listTitles} listId={id} tasks={tasks} setTasks={setTasks} deleteTasksByListId={deleteTasksByListId} deleteTaskById={deleteTaskById} />
           );
         })}
       </div>

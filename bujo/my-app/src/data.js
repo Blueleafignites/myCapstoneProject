@@ -36,9 +36,17 @@ function Data() {
     }
   };
 
+  const deleteTaskById = async (taskId) => {
+    try {
+      await axios.delete(`http://localhost:3000/tasks/${taskId}`);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
-      <Lists priorities={priorities} setPriorities={setPriorities} tags={tags} setTags={setTags} tasks={tasks} setTasks={setTasks} deleteTasksByListId={deleteTasksByListId} />
+      <Lists priorities={priorities} setPriorities={setPriorities} tags={tags} setTags={setTags} tasks={tasks} setTasks={setTasks} deleteTasksByListId={deleteTasksByListId} deleteTaskById={deleteTaskById} />
     </>
   );
 }

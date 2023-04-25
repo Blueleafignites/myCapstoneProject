@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-function Dropdown({ task, priorities, setPriorities, tags, setTags }) {
+function PriorityDropdown({ task, priorities, setPriorities }) {
     const [showPriorityDropdown, setShowPriorityDropdown] = useState(false);
     const [selectedPriority, setSelectedPriority] = useState(task.priority_id ? priorities.find(p => p.priority_id === task.priority_id) : null);
 
@@ -75,5 +75,4 @@ function Dropdown({ task, priorities, setPriorities, tags, setTags }) {
     );
 }
 
-
-export default Dropdown;
+export default PriorityDropdown;
