@@ -38,7 +38,7 @@ function Data() {
 
   return (
     <>
-      <Lists priorities={priorities} tags={tags} tasks={tasks} setTasks={setTasks} deleteTasksByListId={deleteTasksByListId}/>
+      <Lists priorities={priorities} setPriorities={setPriorities} tags={tags} setTags={setTags} tasks={tasks} setTasks={setTasks} deleteTasksByListId={deleteTasksByListId} />
     </>
   );
 }
