@@ -1,5 +1,78 @@
 @charset "utf-8";
 
+.delete-tasks-confirmation {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.delete-confirmation-content {
+  position: absolute;
+  pointer-events: auto;
+  text-align: center;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  border-radius: 10px;
+  background-color: white;
+  width: 425px;
+  z-index: 999;
+}
+.no-click {
+  pointer-events: none;
+}
+.animation {
+  animation-name: shake;
+  animation-duration: 0.5s;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in-out;
+}
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+.delete-confirmation-content p {
+  padding: 5px 15px;
+  font-size: 14px;
+}
+.delete-confirmation-content .close-confirmation {
+  text-align: right;
+}
+.delete-confirmation-buttons {
+  display: flex;
+  justify-content: center;
+
+}
+.cancel-btn {
+  margin-left: 10px;
+}
+.delete-confirmation-buttons button {
+  background-color: lightgray;
+  border: none;
+  padding: 10px 20px;
+  width: 100px;
+  height: 40px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform 0.1s ease-in-out;
+}
+.delete-confirmation-buttons button:active {
+  transform: scale(0.95);
+}
+
 
 .card-header {
   display: flex;
@@ -7,9 +80,11 @@
   justify-content: space-between;
   align-items: center;
 }
+
 .tag-list {
   display: flex;
 }
+
 .card-tags {
   width: 18px;
   height: 18px;
@@ -25,18 +100,22 @@
   cursor: pointer;
   height: 60px;
 }
+
 .card-date {
   font-size: 14px;
   color: gray;
   margin-top: 6px;
 }
+
 .task {
   padding: 10px;
   text-align: left;
 }
+
 p {
   margin: 0;
 }
+
 .modal-overlay {
   position: fixed;
   display: none;
@@ -44,10 +123,11 @@ p {
   height: 100%;
   top: 0;
   left: 0;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 1;
   cursor: pointer;
 }
+
 .modal {
   top: 40%;
   left: 50%;
@@ -59,10 +139,12 @@ p {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
   z-index: 5;
 }
+
 .modal-content {
   padding: 20px;
   text-align: left;
 }
+
 .modal-content .save-task {
   margin-top: 10px;
   text-align: center;
@@ -77,20 +159,24 @@ p {
   font-size: 14px;
   padding: 3px;
 }
+
 .task-title {
   border: none;
   height: 32px;
   flex: 1;
 }
+
 .task-header {
   height: 50px;
   position: relative;
 }
+
 .close-btn {
-  position: absolute; 
-  top: 0; 
-  right: 0; 
+  position: absolute;
+  top: 0;
+  right: 0;
 }
+
 .task-title input {
   font-size: 16px;
   font-weight: bold;
@@ -104,16 +190,20 @@ p {
   display: flex;
   align-items: center;
 }
+
 .no-deadline {
   display: flex;
 }
-.no-deadline > div {
+
+.no-deadline>div {
   display: flex;
   align-items: center;
 }
-.no-deadline > div > input {
+
+.no-deadline>div>input {
   display: none;
 }
+
 .remove-deadline {
   cursor: pointer;
   display: inline-block;
@@ -129,6 +219,7 @@ p {
   border-radius: 25px;
   padding: 0 25px 25px;
 }
+
 .list-container {
   display: flex;
   flex-wrap: wrap;
@@ -136,15 +227,17 @@ p {
   margin: 30px auto;
   height: 100%;
 }
+
 .material-symbols-outlined {
   font-variation-settings:
-  'FILL' 0,
-  'wght' 400,
-  'GRAD' 200,
-  'opsz' 48;
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 200,
+    'opsz' 48;
   cursor: pointer;
   font-size: 28px;
 }
+
 .list-header {
   display: flex;
   flex-wrap: wrap;
@@ -152,22 +245,27 @@ p {
   justify-content: space-between;
   height: 45px;
 }
+
 .list-header p {
   font-weight: bold;
 }
+
 .list-header div .drop-btn,
 .list-header div .add-btn {
   display: flex;
 }
+
 hr {
   height: 1px;
   background-color: lightgrey;
   border: none;
 }
+
 .dropdown {
   position: relative;
   display: inline-block;
 }
+
 .dropdown-content {
   position: absolute;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
@@ -176,6 +274,7 @@ hr {
   padding: 0 5px;
   border-radius: 10px;
 }
+
 .dropdown-tags {
   position: absolute;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
@@ -186,6 +285,7 @@ hr {
   border-radius: 10px;
   z-index: 999;
 }
+
 .dropdown-tags li {
   color: black;
   background-color: white;
@@ -196,18 +296,22 @@ hr {
   align-items: center;
   justify-content: space-between;
 }
+
 .dropdown-tags li label {
   display: flex;
   align-items: center;
 }
+
 .dropdown-tags label {
   cursor: pointer;
 }
+
 .dropdown-content ul,
 .dropdown-tags ul {
   padding: 0;
   margin: 7px 0;
 }
+
 .dropdown-content li {
   color: black;
   min-width: 75px;
@@ -216,11 +320,13 @@ hr {
   display: block;
   font-size: 14px;
 }
+
 .dropdown-content li:hover {
   background-color: lightgrey;
   border-radius: 10px;
   cursor: pointer;
 }
+
 .dropdown-tags label {
   padding: 2px;
 }
@@ -229,12 +335,14 @@ hr {
 .delete-btn button {
   color: red !important;
 }
-.dropdown:hover > .drop-btn, 
+
+.dropdown:hover>.drop-btn,
 .add-btn:hover {
   background-color: lightgray;
   color: gray;
   border-radius: 10px;
 }
+
 .list-title {
   font-size: 16px;
 }
@@ -243,6 +351,7 @@ hr {
   .list {
     width: 350px !important;
   }
+
   .list-container {
     width: 1350px !important;
   }
@@ -252,13 +361,16 @@ hr {
   .modal {
     width: 500px !important;
   }
+
   .confirmation-content {
     width: 425px !important;
     left: -350px !important;
   }
+
   .card-title {
     font-size: 16px !important;
   }
+
   .card-date {
     font-size: 14px !important;
     margin-top: 6px !important;
@@ -276,23 +388,29 @@ hr {
     width: 1050px;
     padding: 0 20px;
   }
+
   .list {
     width: 275px;
     height: 82vh;
   }
+
   .modal {
     width: 370px;
   }
+
   .modal-content {
     padding: 15px;
   }
+
   .confirmation-content {
     width: 300px;
     left: -225px;
   }
+
   .card-title {
     font-size: 14px;
   }
+
   .card-date {
     font-size: 12px;
     margin-top: 10px;

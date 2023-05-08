@@ -1,0 +1,20 @@
+@charset "utf-8";
+
+.settings-container {
+    display: flex;
+}
+.settings-navbar {
+    flex: 1;
+    position: fixed;
+    background-color: lightgrey;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
+    padding: 50px 35px;
+    height: 100%;
+}
+.settings-body {
+    flex: 3;
+    text-align: center;
+}
+.body-text {
+    text-align: left;
+}

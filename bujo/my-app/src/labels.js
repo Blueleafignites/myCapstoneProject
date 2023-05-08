@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-function PriorityDropdown({ task, priorities, setPriorities }) {
+function PriorityDropdown({ task, priorities, setPriorities, selectedPriority, setSelectedPriority }) {
     const [showPriorityDropdown, setShowPriorityDropdown] = useState(false);
-    const [selectedPriority, setSelectedPriority] = useState(task.priority_id ? priorities.find(p => p.priority_id === task.priority_id) : null);
 
     const handleAddPriorityClick = () => {
         setShowPriorityDropdown(!showPriorityDropdown);

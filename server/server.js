@@ -41,12 +41,32 @@ app.get('/tags', (req, res) => {
 
 app.get('/tasks', (req, res) => {
   const query = `
-    SELECT tasks.*, priorities.priority_color, GROUP_CONCAT(DISTINCT tags.tag_color ORDER BY tags.tag_id SEPARATOR ', ') AS tag_colors
-    FROM tasks
-    LEFT JOIN priorities ON tasks.priority_id = priorities.priority_id
-    LEFT JOIN task_tags ON tasks.task_id = task_tags.task_id
-    LEFT JOIN tags ON task_tags.tag_id = tags.tag_id
-    GROUP BY tasks.task_id
+  SELECT 
+  tasks.task_id,
+  tasks.list_id,
+  tasks.priority_id,
+  tasks.task_title,
+  tasks.deadline,
+  tasks.task_description,
+  priorities.priority_color,
+  GROUP_CONCAT(tags.tag_id) AS tag_ids,
+  GROUP_CONCAT(tags.tag_color) AS tag_colors
+  FROM 
+    tasks
+  LEFT JOIN 
+    priorities
+  ON 
+    tasks.priority_id = priorities.priority_id
+  LEFT JOIN 
+    task_tags
+  ON 
+    tasks.task_id = task_tags.task_id
+  LEFT JOIN 
+    tags
+  ON 
+    task_tags.tag_id = tags.tag_id
+  GROUP BY 
+    tasks.task_id;
   `;
 
   connection.query(query, (err, results) => {
@@ -82,6 +102,171 @@ app.delete('/tasks/:taskId', (req, res) => {
     });
   });
 });
+
+app.put('/lists/:listId/tasks', (req, res) => {
+  const targetListId = req.params.listId;
+  const taskIds = req.body.taskIds;
+  const taskIdsStr = taskIds && taskIds.length ? taskIds.join(',') : '';
+
+  const moveTasksQuery = `UPDATE tasks SET list_id = ${targetListId} WHERE task_id IN (${taskIdsStr})`;
+
+  connection.query(moveTasksQuery, (err, results) => {
+    if (err) throw err;
+    res.send(results);
+  });
+});
+
+app.get('/tasks', (req, res) => {
+  let orderBy = '';
+
+  if (req.query.sortByDueDate && req.query.sortAlphabetically) {
+    orderBy = 'ORDER BY deadline ASC, task_title ASC';
+  } else if (req.query.sortByDueDate) {
+    orderBy = 'ORDER BY deadline ASC';
+  } else if (req.query.sortAlphabetically) {
+    orderBy = 'ORDER BY task_title ASC';
+  } else {
+    orderBy = 'ORDER BY created_at ASC';
+  }
+
+  const query = `
+  SELECT 
+  tasks.task_id,
+  tasks.list_id,
+  tasks.priority_id,
+  tasks.task_title,
+  tasks.deadline,
+  tasks.task_description,
+  priorities.priority_color,
+  GROUP_CONCAT(tags.tag_id) AS tag_ids,
+  GROUP_CONCAT(tags.tag_color) AS tag_colors
+  FROM 
+    tasks
+  LEFT JOIN 
+    priorities
+  ON 
+    tasks.priority_id = priorities.priority_id
+  LEFT JOIN 
+    task_tags
+  ON 
+    tasks.task_id = task_tags.task_id
+  LEFT JOIN 
+    tags
+  ON 
+    task_tags.tag_id = tags.tag_id
+  GROUP BY 
+    tasks.task_id;
+    ${orderBy}
+  `;
+
+  connection.query(query, (err, results) => {
+    if (err) throw err;
+    res.send(results);
+  });
+});
+
+app.put('/tasks/:taskId', (req, res) => {
+  const taskId = req.params.taskId;
+  const updatedTask = req.body;
+
+  const updateTaskQuery = `
+    UPDATE tasks
+    SET 
+      task_title = '${updatedTask.task_title}',
+      priority_id = ${updatedTask.priority_id},
+      list_id = ${updatedTask.list_id},
+      deadline = '${updatedTask.deadline}',
+      task_description = '${updatedTask.task_description}'
+    WHERE task_id = ${taskId}
+  `;
+
+  const deleteTaskTagsQuery = `
+    DELETE FROM task_tags WHERE task_id = ${taskId}
+  `;
+
+  const insertTaskTagsQuery = `
+    INSERT INTO task_tags (task_id, tag_id)
+    VALUES ${updatedTask.tags.map(tagId => `(${taskId}, ${tagId})`).join(',')}
+  `;
+
+  connection.query(updateTaskQuery, (err, updateResult) => {
+    if (err) throw err;
+    connection.query(deleteTaskTagsQuery, (err, deleteResult) => {
+      if (err) throw err;
+      connection.query(insertTaskTagsQuery, (err, insertResult) => {
+        if (err) throw err;
+
+        const selectTaskQuery = `
+          SELECT 
+            tasks.task_id,
+            tasks.list_id,
+            tasks.priority_id,
+            tasks.task_title,
+            tasks.deadline,
+            tasks.task_description,
+            priorities.priority_color,
+            GROUP_CONCAT(tags.tag_id) AS tag_ids,
+            GROUP_CONCAT(tags.tag_color) AS tag_colors
+          FROM 
+            tasks
+          LEFT JOIN 
+            priorities
+          ON 
+            tasks.priority_id = priorities.priority_id
+          LEFT JOIN 
+            task_tags
+          ON 
+            tasks.task_id = task_tags.task_id
+          LEFT JOIN 
+            tags
+          ON 
+            task_tags.tag_id = tags.tag_id
+          WHERE tasks.task_id = ${taskId}
+          GROUP BY 
+            tasks.task_id;
+        `;
+
+        connection.query(selectTaskQuery, (err, selectResult) => {
+          if (err) throw err;
+
+          res.send(selectResult[0]);
+        });
+      });
+    });
+  });
+});
+
+app.post('/tasks', (req, res) => {
+  const task = req.body;
+
+  const query = `
+    INSERT INTO tasks (list_id, priority_id, task_title, deadline, task_description)
+    VALUES (?, ?, ?, ?, ?);
+  `;
+  const values = [task.list_id, task.priority_id, task.task_title, task.deadline, task.task_description];
+
+  connection.query(query, values, (err, results) => {
+    if (err) throw err;
+    const taskId = results.insertId;
+
+    if (task.tag_ids && task.tag_ids.length) {
+      const tagIds = task.tag_ids.split(',');
+      const insertTagQuery = `
+        INSERT INTO task_tags (task_id, tag_id)
+        VALUES ?
+      `;
+      const tagValues = tagIds.map(tagId => [taskId, tagId]);
+
+      connection.query(insertTagQuery, [tagValues], (err, results) => {
+        if (err) throw err;
+        res.send({ taskId });
+      });
+    } else {
+      res.send({ taskId });
+    }
+  });
+});
+
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);

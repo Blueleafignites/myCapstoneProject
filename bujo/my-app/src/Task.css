@@ -208,6 +208,7 @@ pointer-events: auto;
 .cancel-btn {
     margin-left: 10px;
 }
+
 .task-container {
     display: flex;
 }

@@ -1,20 +1,78 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PriorityDropdown from "./labels";
 import TagDropdown from "./tags";
 import './Task.css';
 
-function Modal({ onClose, modalRef, task, priorities, setPriorities, tags, setTags, lists, setTasks, deleteTaskById }) {
+function Task({ onClose, modalRef, task, priorities, setPriorities, tags, setTags, lists, setTasks, deleteTaskById, updateTask, addTask }) {
     const [taskTitle, setTaskTitle] = useState(task.task_title);
+    const [selectedPriority, setSelectedPriority] = useState(task.priority_id ? priorities.find(p => p.priority_id === task.priority_id) : null);
+    const [selectedTags, setSelectedTags] = useState(task.tag_ids ? task.tag_ids.split(",") : []);
+    const [selectedList, setSelectedList] = useState(task.list_id || lists[0].id);
+    const [selectedDeadline, setSelectedDeadline] = useState(null);
+    const [taskDescription, setTaskDescription] = useState(task.task_description);
+
+    const [showDatePicker, setShowDatePicker] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
-    const [selectedList, setSelectedList] = useState(task.list_id);
 
     const handleListSelection = (event) => {
         const selectedValue = event.target.value;
         setSelectedList(selectedValue);
     };
 
+    useEffect(() => {
+        if (task.deadline) {
+            setShowDatePicker(true);
+            const deadlineDate = new Date(task.deadline);
+            setSelectedDeadline(deadlineDate.toISOString().split('T')[0]);
+        } else {
+            setSelectedDeadline(null);
+        }
+    }, [task]);
+
+    const handleAddClick = () => {
+        if (!task.deadline === null) {
+            setSelectedDeadline(new Date().toISOString().split('T')[0]);
+        }
+        setShowDatePicker(!showDatePicker);
+    };
+
+    const handleRemoveClick = () => {
+        setSelectedDeadline(null);
+        setShowDatePicker(false);
+    };
+
+    const handleDeadlineChange = (event) => {
+        setSelectedDeadline(event.target.value);
+    };
+
     function handleSaveTask() {
-        onClose();
+        if (!taskTitle) {
+            alert("Task must have a title.")
+        } else {
+            const updatedTask = {
+                task_title: taskTitle,
+                priority_id: selectedPriority ? selectedPriority.priority_id : null,
+                tags: selectedTags,
+                list_id: selectedList,
+                deadline: selectedDeadline,
+                task_description: taskDescription,
+            };
+    
+            console.log("Title: ", taskTitle);
+            console.log("Priority: ", selectedPriority ? selectedPriority.priority_id : null);
+            console.log("Tag(s): ", selectedTags);
+            console.log("List: ", selectedList);
+            console.log("Deadline: ", selectedDeadline);
+            console.log("Description: ", taskDescription);
+    
+            if (task.task_id) {
+                updateTask(task.task_id, updatedTask);
+            } else {
+                addTask(updatedTask);
+            }
+    
+            onClose();
+        }
     }
 
     function handleDeleteTask() {
@@ -30,16 +88,15 @@ function Modal({ onClose, modalRef, task, priorities, setPriorities, tags, setTa
 
     async function handleConfirmDelete() {
         try {
-          await deleteTaskById(task.task_id);
-          setTasks((prevState) => prevState.filter((t) => t.task_id !== task.task_id));
-          onClose();
-          setShowConfirmation(false);
-          document.body.classList.remove('no-click');
+            await deleteTaskById(task.task_id);
+            setTasks((prevState) => prevState.filter((t) => t.task_id !== task.task_id));
+            onClose();
+            setShowConfirmation(false);
+            document.body.classList.remove('no-click');
         } catch (error) {
-          console.error(error);
+            console.error(error);
         }
-      }
-      
+    }
 
     let confirmationOpened = false;
 
@@ -72,22 +129,33 @@ function Modal({ onClose, modalRef, task, priorities, setPriorities, tags, setTa
                     <div className="task-info">
                         <div className="taskPriority">
                             <label htmlFor="taskPriority" className="priority-label">Priority:</label>
-                            <PriorityDropdown task={task} priorities={priorities} setPriorities={setPriorities} />
+                            <PriorityDropdown task={task} priorities={priorities} setPriorities={setPriorities} selectedPriority={selectedPriority} setSelectedPriority={setSelectedPriority} />
                         </div>
                         <div className="taskTags">
                             <label htmlFor="taskTags" class="tags-label">Tags: </label>
-                            <TagDropdown task={task} tags={tags} setTags={setTags} />
+                            <TagDropdown task={task} tags={tags} setTags={setTags} selectedTags={selectedTags} setSelectedTags={setSelectedTags} />
                         </div>
                         <div className="task-list">
                             <label htmlFor="listSelect">Add to list: </label>
                             <select id="listSelect" value={selectedList} onChange={handleListSelection}>
                                 {lists.map((list) => (
-                                    <option key={list.id} value={list.id}>
-                                        {list.title}
-                                    </option>
+                                    <option key={list.id} value={list.id}>{list.title}</option>
                                 ))}
                             </select>
                         </div>
+
+                        <div className="deadline">
+                            <label htmlFor={`deadline-${task.task_id}`}>Deadline:</label>
+                            {showDatePicker && (
+                                <input type="date" id={`deadline-${task.task_id}`} name="deadline" value={selectedDeadline || ''} onChange={handleDeadlineChange} />
+                            )}
+                            <div className="add-deadline-btn">
+                                <span className="material-symbols-outlined" onClick={showDatePicker ? handleRemoveClick : handleAddClick}>
+                                    {showDatePicker ? "remove" : "add"}
+                                </span>
+                            </div>
+                        </div>
+
 
                     </div>
                     <div className="task-actions">
@@ -124,7 +192,7 @@ function Modal({ onClose, modalRef, task, priorities, setPriorities, tags, setTa
                 </div>
                 <div className="task-description">
                     <label htmlFor="taskDescription">Description</label>
-                    <textarea id="taskDescription" placeholder="Add a description..." />
+                    <textarea id="taskDescription" placeholder="Add a description..." value={taskDescription} onChange={(e) => setTaskDescription(e.target.value)} />
                 </div>
                 <div className="save-task">
                     <button onClick={handleSaveTask}>Save</button>
@@ -134,4 +202,4 @@ function Modal({ onClose, modalRef, task, priorities, setPriorities, tags, setTa
     );
 }
 
-export default Modal;
+export default Task;

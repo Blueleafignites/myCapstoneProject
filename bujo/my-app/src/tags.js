@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
 
-function TagDropdown({ task, tags, setTags }) {
+function TagDropdown({ task, tags, setTags, selectedTags, setSelectedTags }) {
     const [showTagDropdown, setShowTagDropdown] = useState(false);
-    const [selectedTags, setSelectedTags] = useState(task.tags || []);
 
     const handleAddTagClick = () => {
         setShowTagDropdown(!showTagDropdown);
     };
 
     const handleTagSelection = (tag) => {
-        if (selectedTags.some((t) => t.tag_id === tag.tag_id)) {
-            setSelectedTags(selectedTags.filter((t) => t.tag_id !== tag.tag_id));
+        if (selectedTags.includes(tag.tag_id.toString())) {
+            setSelectedTags(selectedTags.filter((selectedTag) => selectedTag !== tag.tag_id.toString()));
         } else {
-            setSelectedTags([...selectedTags, tag]);
+            setSelectedTags([...selectedTags, tag.tag_id.toString()]);
         }
     };
 
@@ -45,10 +44,10 @@ function TagDropdown({ task, tags, setTags }) {
                     </div>
                     <hr />
                     <ul>
-                        {tags.map((tag, index) => (
-                            <li key={index}>
+                        {tags.map((tag) => (
+                            <li key={tag.tag_id}>
                                 <label>
-                                    <input type="checkbox" checked={selectedTags.includes(tag)} onChange={() => handleTagSelection(tag)} />
+                                    <input type="checkbox" checked={selectedTags.includes(tag.tag_id.toString())} onChange={() => handleTagSelection(tag)} />
                                     <span className="tag" style={{ background: tag.tag_color }}>{tag.tag_name}</span>
                                 </label>
                                 <span className="material-symbols-outlined edit">edit</span>
@@ -61,9 +60,12 @@ function TagDropdown({ task, tags, setTags }) {
                 {selectedTags.length > 0 && (
                     <div className="selected-tags">
                         <div className="tags">
-                            {selectedTags.map((tag, index) => (
-                                <span className="tag" key={index} style={{ background: tag.tag_color }}>{tag.tag_name}</span>
-                            ))}
+                            {selectedTags.map((selectedTag) => {
+                                const tag = tags.find((tag) => tag.tag_id.toString() === selectedTag);
+                                return (
+                                    <span className="tag" key={tag.tag_id} style={{ background: tag.tag_color }}>{tag.tag_name}</span>
+                                );
+                            })}
                         </div>
                     </div>
                 )}
