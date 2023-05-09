@@ -1,10 +1,10 @@
 import React from 'react';
-import Settings from './Settings';
+import Data from './data';
 
 function App() {
   return (
     <>
-      <Settings />
+      <Data />
     </>
   );
 }

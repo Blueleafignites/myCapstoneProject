@@ -2,19 +2,139 @@
 
 .settings-container {
     display: flex;
+    flex-direction: row;
+    padding-top: 15px;
+    margin: 0 20%;
 }
+
 .settings-navbar {
-    flex: 1;
-    position: fixed;
-    background-color: lightgrey;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
-    padding: 50px 35px;
-    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    justify-content: flex-start;
+    padding: 20px;
+    height: 100vh;
+    width: 200px;
 }
+
+.settings-navbar a {
+    text-decoration: none;
+    color: #666;
+    font-weight: bold;
+    margin-bottom: 20px;
+    transition: color 0.3s ease;
+}
+
+.settings-navbar a:hover {
+    color: #000;
+}
+
+.settings-navbar a {
+    margin: 0;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.settings-navbar a:hover {
+    background-color: #ddd;
+}
+
 .settings-body {
-    flex: 3;
-    text-align: center;
+    flex: 1;
+    padding: 20px;
+    background-color: #fff;
 }
+
+.settings-body h2 {
+    margin: 0 0 20px 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.settings-body hr {
+    margin: 20px 0;
+    border: none;
+    border-bottom: 1px solid #ddd;
+}
+
 .body-text {
-    text-align: left;
+    margin: 0 25px 50px;
+}
+
+.body-text label {
+    margin-bottom: 10px;
+    font-weight: bold;
+    display: block;
+}
+
+.body-text input[type="text"] {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.body-text button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.body-text button:hover {
+    background-color: #0062cc;
+}
+
+.switch {
+    display: flex !important;
+    align-items: center;
+  }
+  
+.switch span:first-child {
+    margin-right: 10px;
+}
+
+.switch input {
+    display: none;
+}
+
+.slider {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    width: 40px;
+    height: 20px;
+    background-color: #ddd;
+    border-radius: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    left: 2px;
+    top: 2px;
+    background-color: #fff;
+    transition: transform 0.3s ease;
+}
+
+input:checked+.slider {
+    background-color: #007bff;
+}
+
+input:checked+.slider:before {
+    transform: translateX(20px);
 }

@@ -151,6 +151,7 @@ p {
 }
 
 .task-description textarea {
+  box-sizing: border-box;
   border: solid 1px lightgrey;
   width: 98.5%;
   min-height: 200px;
