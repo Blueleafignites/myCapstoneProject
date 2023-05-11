@@ -1,10 +1,10 @@
 import React from 'react';
-import Login from './Login';
+import Data from './data';
 
 function App() {
   return (
     <>
-      <Login />
+      <Data />
     </>
   );
 }

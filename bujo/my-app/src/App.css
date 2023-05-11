@@ -1,5 +1,7 @@
 @charset "utf-8";
 
+/*white-space: normal;*/
+
 .delete-tasks-confirmation {
   position: relative;
   display: flex;
@@ -196,7 +198,7 @@ p {
   display: flex;
 }
 
-.no-deadline>div {
+.no-deadline > div {
   display: flex;
   align-items: center;
 }
@@ -212,20 +214,20 @@ p {
 }
 
 .list {
-  width: 350px;
-  text-align: center;
   display: inline-block;
+  text-align: center;
   background-color: white;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
   border-radius: 25px;
+  width: 350px;
   padding: 0 25px 25px;
+  max-height: 97%;
 }
 
 .list-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  margin: 30px auto;
   height: 100%;
 }
 
@@ -359,6 +361,11 @@ hr {
 }
 
 @media screen and (min-width: 1100px) {
+  
+  .list-container {
+    margin: 30px auto !important;
+  }
+  
   .modal {
     width: 500px !important;
   }
@@ -378,21 +385,21 @@ hr {
   }
 }
 
-@media screen and (min-width: 750px) {
-  .list {
-    height: 88vh !important;
-  }
-}
-
 @media screen and (min-width: 350px) {
   .list-container {
     width: 1050px;
     padding: 0 20px;
+    margin: 80px auto;
+    height: calc(100vh - 120px);
   }
 
   .list {
     width: 275px;
-    height: 82vh;
+  }
+
+  .list-tasks {
+    overflow: auto;
+    height: calc(100vh - 200px);  
   }
 
   .modal {

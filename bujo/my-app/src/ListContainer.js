@@ -42,13 +42,13 @@ function ListContainer({ listId, title, priorities, setPriorities, tags, setTags
 
   function handleSaveSort() {
     getTasks(sortByDueDate, sortAlphabetically)
-    .then(data => {
-      setTasks(data);
-      setShowSortList(false);
-    })
-    .catch(error => {
-      console.log(error);
-    });
+      .then(data => {
+        setTasks(data);
+        setShowSortList(false);
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   const handleMoveAllClick = () => {
@@ -149,25 +149,27 @@ function ListContainer({ listId, title, priorities, setPriorities, tags, setTags
         </div>
       </div>
       <hr />
-      {tasks.filter((task) => task.list_id === listId).map((task, index) => (
-        <div className="task-card" key={index} style={{ backgroundColor: `${task.priority_color}60` }} onClick={() => handleEditTask(task)}>
-          <div className="task">
-            <div className="card-header">
-              <p className="card-title">{task.task_title}</p>
-              {task.tag_colors &&
-                <div className="tag-colors" style={{ display: "flex" }}>
-                  {task.tag_colors.split(',').map((tagColor, index) => (
-                    <div className="card-tags" key={index} style={{ backgroundColor: tagColor }}></div>
-                  ))}
-                </div>
+      <div className="list-tasks">
+        {tasks.filter((task) => task.list_id === listId).map((task, index) => (
+          <div className="task-card" key={index} style={{ backgroundColor: `${task.priority_color}60` }} onClick={() => handleEditTask(task)}>
+            <div className="task">
+              <div className="card-header">
+                <p className="card-title">{task.task_title}</p>
+                {task.tag_colors &&
+                  <div className="tag-colors" style={{ display: "flex" }}>
+                    {task.tag_colors.split(',').map((tagColor, index) => (
+                      <div className="card-tags" key={index} style={{ backgroundColor: tagColor }}></div>
+                    ))}
+                  </div>
+                }
+              </div>
+              {task.deadline &&
+                <p className="card-date">Deadline: {new Date(task.deadline).toLocaleDateString('en-US', { timeZone: 'UTC' })}</p>
               }
             </div>
-            {task.deadline &&
-              <p className="card-date">Deadline: {new Date(task.deadline).toLocaleDateString('en-US', { timeZone: 'UTC' })}</p>
-            }
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
 
       <div className="dropdown">
         {showSortList && (
