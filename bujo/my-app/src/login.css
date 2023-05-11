@@ -1,72 +1,60 @@
 .container {
-    margin: auto;
-    width: 50%;
-    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
 }
 
-form {
-    border: 3px solid #f1f1f1;
-    padding: 20px;
-    background-color: #f9f9f9;
-}
-
-h1 {
+.login-box {
+    max-width: 400px;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     text-align: center;
-    font-size: 40px;
-    margin-bottom: 50px;
 }
 
-label {
-    font-size: 20px;
+.authentication-logo {
+    width: 70px;
+    margin-bottom: 20px;
 }
 
-input[type=text],
-input[type=password] {
+.google-login-button {
+    margin-bottom: 20px;
+}
+
+.login-group {
+    margin-bottom: 15px;
+}
+
+.login-input {
+    display: block;
     width: 100%;
     padding: 10px;
-    margin: 8px 0;
-    display: inline-block;
+    font-size: 16px;
+    border-radius: 5px;
     border: 1px solid #ccc;
     box-sizing: border-box;
 }
 
-button[type=submit] {
-    background-color: #4CAF50;
-    color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    cursor: pointer;
+button {
+    display: block;
     width: 100%;
-    font-size: 20px;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #00AFFF;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
 }
 
-button[type=submit]:hover {
-    opacity: 0.8;
+button:hover {
+    background-color: #007bff;
 }
 
-label input[type=checkbox] {
-    margin-bottom: 15px;
-    font-size: 20px;
-}
-
-.forgot-password {
-    text-align: center;
-    margin-top: 10px;
-}
-
-.forgot-password a {
-    color: #008CBA;
-    text-decoration: none;
-}
-
-.forgot-password a:hover {
-    text-decoration: underline;
-}
-
-
-@media (max-width: 600px) {
-    .container {
-        width: 100%;
-    }
+p {
+    margin-top: 20px;
+    font-size: 14px;
 }

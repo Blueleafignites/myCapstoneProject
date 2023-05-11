@@ -177,7 +177,7 @@ function ListContainer({ listId, title, priorities, setPriorities, tags, setTags
                 <p>Sort List</p>
               </div>
               <div className="dropdown-close">
-                <span  className="material-symbols-outlined" onClick={() => setShowSortList(false)}>close</span>
+                <span className="material-symbols-outlined" onClick={() => setShowSortList(false)}>close</span>
               </div>
             </div>
             <hr />
