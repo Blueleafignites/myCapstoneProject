@@ -31,11 +31,11 @@ function Login() {
                 <div className="login-group">
                     <input type="password" className="login-input" id="password" placeholder="Password" />
                 </div>
-                <button type="submit">Sign in</button>
-                <p>
+                <button className="sign-in" type="submit">Sign in</button>
+                <p className="login-text">
                     Don't have an account? <a href="index.html">Sign up</a>
                 </p>
-                <p>
+                <p className="login-text">
                     Forgot your password? <a href="index.html">Reset password</a>
                 </p>
             </div>

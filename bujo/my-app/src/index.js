@@ -5,7 +5,7 @@ import App from './App';
 import './navigation.css';
 
 createRoot(document.getElementById('root')).render(
-  <GoogleOAuthProvider clientId="189940497823-ktv9nu0hu5j5dqcfvstmd2tlt9uva9h7.apps.googleusercontent.com">
+  <GoogleOAuthProvider clientId="189940497823-ktv9nu0hu5j5dqcfvstmd2tlt9uva9h7.apps.googleusercontent.com" redirectUri="http://localhost:3001">
     <React.StrictMode>
       <>
         <App />

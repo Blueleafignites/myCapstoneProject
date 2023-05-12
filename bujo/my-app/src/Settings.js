@@ -26,10 +26,10 @@ function Settings() {
         <h2 id="customization">Customization</h2>
         <hr />
         <div className="body-text">
-          <label class="switch">
+          <label className="switch">
             <span>Darkmode:</span>
             <input type="checkbox" />
-            <span class="slider"></span>
+            <span className="slider"></span>
           </label>
         </div>
 
@@ -65,10 +65,10 @@ function Settings() {
         <hr />
         <h3>Member Permissions</h3>
         <div className="body-text">
-          <label class="switch">
+          <label className="switch">
             <span>Members can add tasks:</span>
             <input type="checkbox" />
-            <span class="slider"></span>
+            <span className="slider"></span>
           </label>
         </div>
 
@@ -80,10 +80,10 @@ function Settings() {
         <h2 id="archived">Archived Tasks</h2>
         <hr />
         <div className="body-text">
-          <label class="switch">
+          <label className="switch">
             <span>Delete Tasks After 30 Days:</span>
             <input type="checkbox" />
-            <span class="slider"></span>
+            <span className="slider"></span>
           </label>
         </div>
 
