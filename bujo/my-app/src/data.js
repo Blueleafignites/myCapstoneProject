@@ -30,7 +30,9 @@ function Data() {
 
   const deleteTasksByListId = async (listId) => {
     try {
-      await axios.delete(`http://localhost:3000/lists/${listId}/tasks`);
+      const res = await axios.delete(`http://localhost:3000/lists/${listId}/tasks`);
+      return res.data;
+
     } catch (error) {
       console.error(error);
     }
@@ -38,7 +40,9 @@ function Data() {
 
   const deleteTaskById = async (taskId) => {
     try {
-      await axios.delete(`http://localhost:3000/tasks/${taskId}`);
+      const res = await axios.delete(`http://localhost:3000/tasks/${taskId}`);
+      return res.data;
+
     } catch (error) {
       console.error(error);
     }
@@ -73,6 +77,7 @@ function Data() {
     try {
       const res = await axios.put(`http://localhost:3000/tasks/${taskId}`, updatedTask);
       return res.data;
+
     } catch (error) {
       console.error(error);
       return null;
@@ -83,15 +88,38 @@ function Data() {
     try {
       const res = await axios.post('http://localhost:3000/tasks', newTask);
       return res.data.taskId;
+
     } catch (error) {
       console.error(error);
       return null;
     }
   };
 
+  const updatePriorityName = async (priorityId, updatedPriority) => {
+    try {
+      const res = await axios.put(`http://localhost:3000/priorities/${priorityId}`, updatedPriority);
+      return res.data;
+
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
+  
+  const deleteTag = async (tagId) => {
+    try {
+      const res = await axios.delete(`http://localhost:3000/tags/${tagId}`);
+      return res.data;
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+
   return (
     <>
-      <Lists priorities={priorities} setPriorities={setPriorities} tags={tags} setTags={setTags} tasks={tasks} setTasks={setTasks} deleteTasksByListId={deleteTasksByListId} deleteTaskById={deleteTaskById} moveAllTasksToList={moveAllTasksToList} getTasks={getTasks} updateTask={updateTask} addTask={addTask} />
+      <Lists priorities={priorities} setPriorities={setPriorities} tags={tags} setTags={setTags} tasks={tasks} setTasks={setTasks} deleteTasksByListId={deleteTasksByListId} deleteTaskById={deleteTaskById} moveAllTasksToList={moveAllTasksToList} getTasks={getTasks} updateTask={updateTask} addTask={addTask} updatePriorityName={updatePriorityName} deleteTag={deleteTag} />
     </>
   );
 }

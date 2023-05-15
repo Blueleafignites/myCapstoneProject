@@ -1,5 +1,37 @@
 @charset "utf-8";
 
+.color-picker {
+    display: flex !important;
+    align-items: center;
+}
+
+.color-picker input[type=radio] {
+    margin: 0 10px 0 0;
+    transform: scale(1.6);
+}
+
+.label-text {
+    margin-right: 8px;
+}
+
+.color-list {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.color-box {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+    padding: 2px;
+    border-radius: 5px;
+}
+
+input[type=radio]:checked+.color-box {
+    border-color: #000;
+}
+
 .settings-container {
     display: flex;
     flex-direction: row;
@@ -21,20 +53,15 @@
     text-decoration: none;
     color: #666;
     font-weight: bold;
-    margin-bottom: 20px;
-    transition: color 0.3s ease;
-}
-
-.settings-navbar a:hover {
-    color: #000;
-}
-
-.settings-navbar a {
     margin: 0;
     padding: 10px;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+}
+
+.settings-navbar a:hover {
+    color: #000;
 }
 
 .settings-navbar a:hover {
@@ -44,7 +71,6 @@
 .settings-body {
     flex: 1;
     padding: 20px;
-    background-color: #fff;
 }
 
 .settings-body h2 {
@@ -56,17 +82,22 @@
 .settings-body hr {
     margin: 20px 0;
     border: none;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid lightgrey;
 }
 
 .body-text {
     margin: 0 25px 50px;
 }
 
-.body-text label {
-    margin-bottom: 10px;
+.body-text span {
     font-weight: bold;
     display: block;
+}
+
+.body-text label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
 }
 
 .body-text input[type="text"] {
@@ -74,7 +105,7 @@
     box-sizing: border-box;
     width: 100%;
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid lightgrey;
     border-radius: 5px;
     font-size: 16px;
 }
@@ -83,7 +114,7 @@
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
-    background-color: #007bff;
+    background-color: #00AFFF;
     color: #fff;
     font-size: 16px;
     font-weight: bold;
@@ -92,14 +123,14 @@
 }
 
 .body-text button:hover {
-    background-color: #0062cc;
+    background-color: #007bff;
 }
 
 .switch {
     display: flex !important;
     align-items: center;
-  }
-  
+}
+
 .switch span:first-child {
     margin-right: 10px;
 }
@@ -132,7 +163,7 @@
 }
 
 input:checked+.slider {
-    background-color: #007bff;
+    background-color: #00AFFF;
 }
 
 input:checked+.slider:before {

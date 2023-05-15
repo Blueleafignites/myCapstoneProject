@@ -1,5 +1,56 @@
 @charset "utf-8";
 
+.dark-mode body,
+.dark-mode .task-title input,
+.dark-mode .navbar-brand,
+.dark-mode .nav-link,
+.dark-mode .dropdown-content li,
+.dark-mode .dropdown-tags li,
+.dark-mode #listSelect,
+.dark-mode #deadline {
+    color: white !important;
+}
+
+.dark-mode body,
+.dark-mode .list,
+.dark-mode .modal,
+.dark-mode .task-description textarea,
+.dark-mode input,
+.dark-mode .dropdown-content,
+.dark-mode .dropdown-tags,
+.dark-mode .dropdown-tags li,
+.dark-mode #listSelect,
+.dark-mode #deadline {
+    background: #333333 !important;
+}
+
+.dark-mode .dropdown-content li:hover,
+.dark-mode .dropdown-tags li:hover {
+    background-color: grey;
+}
+
+.dark-mode .card-date,
+.dark-mode .settings-navbar a {
+    color: lightgrey !important;
+}
+
+.dark-mode hr {
+    background-color: grey !important;
+}
+
+.dark-mode .task-description textarea,
+.dark-mode .deadline input,
+.dark-mode .task-list select {
+    border: solid 1px grey !important;
+}
+
+.dark-mode .tagDrop-btn,
+.dark-mode .tagDrop-btn,
+.dark-mode .add-deadline-btn {
+    background-color: grey !important;
+}
+
+
 html {
     height: 100%;
     box-sizing: border-box;

@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import PriorityDropdown from "./labels";
+import PriorityDropdown from "./priority";
 import TagDropdown from "./tags";
 import './Task.css';
 
-function Task({ onClose, modalRef, task, priorities, setPriorities, tags, setTags, lists, setTasks, deleteTaskById, updateTask, addTask }) {
+function Task({ onClose, modalRef, task, priorities, setPriorities, tags, setTags, lists, setTasks, deleteTaskById, updateTask, addTask, updatePriorityName, deleteTag }) {
     const [taskTitle, setTaskTitle] = useState(task.task_title);
     const [selectedPriority, setSelectedPriority] = useState(task.priority_id ? priorities.find(p => p.priority_id === task.priority_id) : null);
     const [selectedTags, setSelectedTags] = useState(task.tag_ids ? task.tag_ids.split(",") : []);
@@ -90,6 +90,7 @@ function Task({ onClose, modalRef, task, priorities, setPriorities, tags, setTag
         try {
             await deleteTaskById(task.task_id);
             setTasks((prevState) => prevState.filter((t) => t.task_id !== task.task_id));
+
             onClose();
             setShowConfirmation(false);
             document.body.classList.remove('no-click');
@@ -129,11 +130,11 @@ function Task({ onClose, modalRef, task, priorities, setPriorities, tags, setTag
                     <div className="task-info">
                         <div className="taskPriority">
                             <label htmlFor="taskPriority" className="priority-label">Priority:</label>
-                            <PriorityDropdown task={task} priorities={priorities} setPriorities={setPriorities} selectedPriority={selectedPriority} setSelectedPriority={setSelectedPriority} />
+                            <PriorityDropdown task={task} priorities={priorities} setPriorities={setPriorities} selectedPriority={selectedPriority} setSelectedPriority={setSelectedPriority} updatePriorityName={updatePriorityName} />
                         </div>
                         <div className="taskTags">
-                            <label htmlFor="taskTags" class="tags-label">Tags: </label>
-                            <TagDropdown task={task} tags={tags} setTags={setTags} selectedTags={selectedTags} setSelectedTags={setSelectedTags} />
+                            <label htmlFor="taskTags" className="tags-label">Tags: </label>
+                            <TagDropdown task={task} tags={tags} setTags={setTags} selectedTags={selectedTags} setSelectedTags={setSelectedTags} deleteTag={deleteTag} />
                         </div>
                         <div className="task-list">
                             <label htmlFor="listSelect">Add to list: </label>
@@ -155,7 +156,6 @@ function Task({ onClose, modalRef, task, priorities, setPriorities, tags, setTag
                                 </span>
                             </div>
                         </div>
-
 
                     </div>
                     <div className="task-actions">

@@ -5,24 +5,30 @@
     justify-content: space-between;
     align-items: center;
 }
+
 .dropdown-title {
     position: relative;
     left: 50%;
     transform: translateX(-50%);
     font-weight: bold;
 }
+
 .dropdown-title-edit {
     font-weight: bold;
 }
-.dropdown-close span, .arrow-back span {
+
+.dropdown-close span,
+.arrow-back span {
     font-size: 22px;
-} 
+}
+
 .header-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
 }
+
 .edit-tag {
     display: flex;
     justify-content: center;
@@ -35,10 +41,10 @@
     justify-content: center;
     margin-top: 10px;
 }
+
 .dropdown-edit-buttons button {
     background-color: lightgray;
     border: none;
-    padding: 10px 20px;
     width: 75px;
     height: 30px;
     border-radius: 5px;
@@ -46,9 +52,11 @@
     font-weight: bold;
     transition: transform 0.1s ease-in-out;
 }
+
 .dropdown-edit-buttons button:hover {
     background-color: rgb(180, 180, 180);
 }
+
 .dropdown-edit-buttons button:active {
     transform: scale(0.95);
 }
@@ -57,14 +65,16 @@
 .taskPriority {
     padding-top: 10px;
 }
-.taskPriority, 
-.taskTags, 
-.deadline, 
+
+.taskPriority,
+.taskTags,
+.deadline,
 .task-list {
     padding-bottom: 10px;
 }
+
 .task-header,
-.taskTags, 
+.taskTags,
 .taskPriority,
 .add-tags {
     display: flex;
@@ -73,66 +83,86 @@
 
 
 
-.tag, .priority {
+.tag,
+.priority {
     display: inline-block;
     margin-right: 5px;
     padding: 5px;
     border-radius: 5px;
     font-size: 14px;
 }
+
 .dropdown-tags p {
     display: flex;
     align-items: center;
     justify-content: center;
     height: 35px;
 }
+
 .dropdown-tags hr {
     margin: 0;
 }
+
 input[type="checkbox"] {
     width: 20px;
     height: 20px;
     cursor: pointer;
     margin-right: 8px;
 }
-.edit {
-    font-size: 20px !important;
+
+.edit,
+.delete-trashcan {
+    font-size: 25px !important;
     padding: 5px;
     border-radius: 5px;
 }
-.edit:hover {
-    background-color: lightgrey; 
+
+.edit:hover,
+.delete-trashcan:hover {
+    background-color: lightgrey;
 }
-.tagDrop-btn, 
+
+.tag-actions {
+    display: flex;
+    align-items: center;
+}
+
+.tagDrop-btn,
 .tagDrop-btn,
 .add-deadline-btn {
     background-color: lightgray;
     border-radius: 5px;
 }
-.tagDrop-btn:hover, 
+
+.tagDrop-btn:hover,
 .tagDrop-btn:hover,
 .add-deadline-btn:hover {
     background-color: rgb(180, 180, 180);
 }
+
 .edit {
     float: right;
 }
+
 .deadline input {
     margin-right: 5px;
 }
-.deadline input, 
-.task-list select  {
+
+.deadline input,
+.task-list select {
     border: solid 1px lightgrey;
     border-radius: 5px;
     width: 110px;
     height: 25px;
     text-align: center;
 }
+
 .tagDrop-btn,
 .tagDrop-btn,
-.add-deadline-btn   {
+.add-deadline-btn {
     display: flex;
 }
+
 .taskTags .tags-label,
 .taskPriority .priority-label,
 .deadline label,
@@ -141,8 +171,10 @@ input[type="checkbox"] {
     padding-right: 5px;
     font-weight: bold;
 }
-.task-actions button, 
-.save-task button {
+
+.task-actions button,
+.save-task button,
+.add-new-tag {
     background-color: lightgray;
     border: none;
     padding: 10px 20px;
@@ -153,36 +185,65 @@ input[type="checkbox"] {
     font-weight: bold;
     transition: transform 0.1s ease-in-out;
 }
-.task-actions button:hover, 
-.save-task button:hover {
+
+.task-actions button:hover,
+.save-task button:hover,
+.add-new-tag:hover {
     background-color: rgb(180, 180, 180);
 }
-.task-actions button:active, 
-.save-task button:active {
+
+.task-actions button:active,
+.save-task button:active,
+.add-new-tag:active {
     transform: scale(0.95);
 }
+
+.new-tag-button {
+    text-align: center;
+    margin: 10px 0;
+}
+
 .no-click {
     pointer-events: none;
 }
+
 .confirmation-content {
-pointer-events: auto;
+    pointer-events: auto;
 }
+
 .animation {
     animation-name: shake;
     animation-duration: 0.5s;
     animation-iteration-count: 1;
     animation-timing-function: ease-in-out;
 }
+
 @keyframes shake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    50% { transform: translateX(5px); }
-    75% { transform: translateX(-5px); }
-    100% { transform: translateX(0); }
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    50% {
+        transform: translateX(5px);
+    }
+
+    75% {
+        transform: translateX(-5px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
 }
+
 .delete-confirmation {
     position: relative;
 }
+
 .confirmation-content {
     position: absolute;
     text-align: center;
@@ -194,17 +255,21 @@ pointer-events: auto;
     z-index: 999;
     left: -400px;
 }
+
 .confirmation-content p {
     padding: 5px 15px;
     font-size: 14px;
 }
+
 .confirmation-content .close-confirmation {
     text-align: right;
 }
+
 .confirmation-buttons {
     display: flex;
     justify-content: center;
 }
+
 .cancel-btn {
     margin-left: 10px;
 }
@@ -212,16 +277,20 @@ pointer-events: auto;
 .task-container {
     display: flex;
 }
+
 .task-info {
     flex: 1;
 }
+
 .task-actions {
     width: 100px;
 }
+
 .task-actions {
     margin-top: 10px;
     text-align: right;
 }
+
 .actions-button button {
     margin-bottom: 10px;
 }

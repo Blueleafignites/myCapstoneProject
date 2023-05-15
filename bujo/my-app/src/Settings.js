@@ -1,7 +1,50 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './settings.css';
 
-function Settings() {
+function Settings({ darkMode, setDarkMode }) {
+
+
+  const handleToggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
+  const [selectedColor, setSelectedColor] = useState(
+    localStorage.getItem('selectedColor') || 'default'
+  );
+
+  useEffect(() => {
+    localStorage.setItem('selectedColor', selectedColor);
+  }, [selectedColor]);
+
+  const handleColorChange = async (event) => {
+    const newColor = event.target.value;
+    setSelectedColor(newColor);
+    const colorMap = {
+      "default": {
+        1: "#EB575C",
+        2: "#FF9633",
+        3: "#8EBB25",
+        4: "#00AFFF",
+      },
+      "special": {
+        1: "#5AEDF5",
+        2: "#FDE969",
+        3: "#E48BF1",
+        4: "#A4D57A",
+      },
+    };
+
+    const colorValues = colorMap[newColor];
+    try {
+      for (const [id, color] of Object.entries(colorValues)) {
+        await axios.put(`http://localhost:3000/priorities/color/${id}`, { color });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="settings-container">
       <div className="settings-navbar">
@@ -25,10 +68,32 @@ function Settings() {
 
         <h2 id="customization">Customization</h2>
         <hr />
+        <h3>Priority Color Sets</h3>
+        <div className="body-text">
+          <label className="color-picker">
+            <input type="radio" name="color" value="default" id="default-color" onChange={handleColorChange} checked={selectedColor === "default"} />
+            <span className="color-list">Default</span>
+            <span className="color-box" id="1" style={{ backgroundColor: "#EB575C" }}></span>
+            <span className="color-box" id="2" style={{ backgroundColor: "#FF9633" }}></span>
+            <span className="color-box" id="3" style={{ backgroundColor: "#A0C841" }}></span>
+            <span className="color-box" id="4" style={{ backgroundColor: "#7AD6FA" }}></span>
+          </label>
+
+          <label className="color-picker">
+            <input type="radio" name="color" value="special" id="special-color" onChange={handleColorChange} checked={selectedColor === "special"} />
+            <span className="color-list">Special</span>
+            <span className="color-box" id="1" style={{ backgroundColor: "#5AEDF5" }}></span>
+            <span className="color-box" id="2" style={{ backgroundColor: "#FDE969" }}></span>
+            <span className="color-box" id="3" style={{ backgroundColor: "#E48BF1" }}></span>
+            <span className="color-box" id="4" style={{ backgroundColor: "#A4D57A" }}></span>
+          </label>
+        </div>
+
+        <h3>Theme</h3>
         <div className="body-text">
           <label className="switch">
             <span>Darkmode:</span>
-            <input type="checkbox" />
+            <input type="checkbox" checked={darkMode} onChange={handleToggleDarkMode} />
             <span className="slider"></span>
           </label>
         </div>

@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import Task from "./Task";
 import './App.css';
 
-function ListContainer({ listId, title, priorities, setPriorities, tags, setTags, lists, tasks, setTasks, deleteTasksByListId, deleteTaskById, moveAllTasksToList, getTasks, updateTask, addTask }) {
+function ListContainer({ listId, title, priorities, setPriorities, tags, setTags, lists, tasks, setTasks, deleteTasksByListId, deleteTaskById, moveAllTasksToList, getTasks, updateTask, addTask, updatePriorityName, deleteTag }) {
   const modalRef = useRef();
   const overlayId = `modalOverlay-${title}`;
 
@@ -124,6 +124,8 @@ function ListContainer({ listId, title, priorities, setPriorities, tags, setTags
     document.getElementById(overlayId).style.display = "none";
   };
 
+  const nonePriority = priorities.find(p => p.priority_name === "None");
+
   return (
     <div className="list">
       <div className="list-header">
@@ -151,7 +153,11 @@ function ListContainer({ listId, title, priorities, setPriorities, tags, setTags
       <hr />
       <div className="list-tasks">
         {tasks.filter((task) => task.list_id === listId).map((task, index) => (
-          <div className="task-card" key={index} style={{ backgroundColor: `${task.priority_color}60` }} onClick={() => handleEditTask(task)}>
+          <div className="task-card"
+            key={index}
+            style={{ backgroundColor: task.priority_color ? `${task.priority_color}60` : `${nonePriority.priority_color}60` }}
+            onClick={() => handleEditTask(task)}
+          >
             <div className="task">
               <div className="card-header">
                 <p className="card-title">{task.task_title}</p>
@@ -246,7 +252,7 @@ function ListContainer({ listId, title, priorities, setPriorities, tags, setTags
 
       {showModal && (
         <>
-          <Task onClose={handleCloseModal} modalRef={modalRef} task={task} priorities={priorities} setPriorities={setPriorities} tags={tags} setTags={setTags} lists={lists} setTasks={setTasks} deleteTaskById={deleteTaskById} updateTask={updateTask} addTask={addTask} />
+          <Task onClose={handleCloseModal} modalRef={modalRef} task={task} priorities={priorities} setPriorities={setPriorities} tags={tags} setTags={setTags} lists={lists} setTasks={setTasks} deleteTaskById={deleteTaskById} updateTask={updateTask} addTask={addTask} updatePriorityName={updatePriorityName} deleteTag={deleteTag} />
         </>
       )}
       <div id={overlayId} className="modal-overlay" onClick={() => handleCloseModal()}></div>

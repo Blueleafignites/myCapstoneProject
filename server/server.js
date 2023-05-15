@@ -2,10 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mysql = require('mysql2');
-require("dotenv/config");
-const { OAuth2Client } = require("google-auth-library");
-const jwt = require("jsonwebtoken");
-
 
 const app = express();
 const port = 3000;
@@ -271,6 +267,35 @@ app.post('/tasks', (req, res) => {
   });
 });
 
+app.put('/priorities/:id', (req, res) => {
+  const priorityId = req.params.id;
+  const updatedPriorityName = req.body.priority_name;
+  const updatePriorityQuery = `
+    UPDATE priorities
+    SET
+      priority_name = '${updatedPriorityName}'
+    WHERE
+      priority_id = ${priorityId}
+  `;
+  connection.query(updatePriorityQuery, (err, results) => {
+    if (err) throw err;
+    res.send(results);
+  });
+});
+
+app.delete('/tags/:tagId', (req, res) => {
+  const tagId = req.params.tagId;
+  const deleteTagsQuery = `DELETE FROM tags WHERE tag_id = ${tagId}`;
+  const deleteTaskTagsQuery = `DELETE FROM task_tags WHERE tag_id = ${tagId}`;
+
+  connection.query(deleteTagsQuery, (err, results) => {
+    if (err) throw err;
+    connection.query(deleteTaskTagsQuery, (err, results) => {
+      if (err) throw err;
+      res.send(results);
+    });
+  });
+});
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);

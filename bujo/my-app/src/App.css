@@ -8,6 +8,7 @@
   justify-content: center;
   align-items: center;
 }
+
 .delete-confirmation-content {
   position: absolute;
   pointer-events: auto;
@@ -19,47 +20,59 @@
   width: 425px;
   z-index: 999;
 }
+
 .no-click {
   pointer-events: none;
 }
+
 .animation {
   animation-name: shake;
   animation-duration: 0.5s;
   animation-iteration-count: 1;
   animation-timing-function: ease-in-out;
 }
+
 @keyframes shake {
   0% {
     transform: translateX(0);
   }
+
   25% {
     transform: translateX(-5px);
   }
+
   50% {
     transform: translateX(5px);
   }
+
   75% {
     transform: translateX(-5px);
   }
+
   100% {
     transform: translateX(0);
   }
 }
+
 .delete-confirmation-content p {
   padding: 5px 15px;
   font-size: 14px;
 }
+
 .delete-confirmation-content .close-confirmation {
   text-align: right;
 }
+
 .delete-confirmation-buttons {
   display: flex;
   justify-content: center;
 
 }
+
 .cancel-btn {
   margin-left: 10px;
 }
+
 .delete-confirmation-buttons button {
   background-color: lightgray;
   border: none;
@@ -71,6 +84,7 @@
   font-weight: bold;
   transition: transform 0.1s ease-in-out;
 }
+
 .delete-confirmation-buttons button:active {
   transform: scale(0.95);
 }
@@ -95,7 +109,6 @@
 }
 
 .task-card {
-  background-color: rgba(0, 175, 255, 0.5);
   border-radius: 10px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
   margin: 15px 0;
@@ -198,7 +211,7 @@ p {
   display: flex;
 }
 
-.no-deadline > div {
+.no-deadline>div {
   display: flex;
   align-items: center;
 }
@@ -281,7 +294,7 @@ hr {
   position: absolute;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
   top: 30px;
-  min-width: 175px;
+  min-width: 200px;
   background-color: white;
   padding: 0 5px;
   border-radius: 10px;
@@ -334,7 +347,8 @@ hr {
 }
 
 .dropdown-content .delete,
-.delete-btn button {
+.delete-btn button,
+.delete-trashcan {
   color: red !important;
 }
 
@@ -360,11 +374,11 @@ hr {
 }
 
 @media screen and (min-width: 1100px) {
-  
+
   .list-container {
     margin: 30px auto !important;
   }
-  
+
   .modal {
     width: 500px !important;
   }
@@ -398,7 +412,7 @@ hr {
 
   .list-tasks {
     overflow: auto;
-    height: calc(100vh - 200px);  
+    height: calc(100vh - 200px);
   }
 
   .modal {

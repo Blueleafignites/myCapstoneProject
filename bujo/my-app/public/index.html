@@ -5,7 +5,8 @@
   <meta charset="utf-8" />
   <link rel="icon" href="ravenicon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="manifest" href="manifest.json" />
   <title>Raven BuJo</title>
 </head>
@@ -16,13 +17,13 @@
       <div class="nav-container">
         <div class="logo">
           <a href="/login"><img class="navIcon" src="ravenicon.png" alt="Icon" />
-          <a class="navbar-brand" href="/login">Raven BuJo</a>
+            <a class="navbar-brand" href="/login">Raven BuJo</a>
         </div>
         <div class="navbar-nav sidenav nav-menu" id="navMenu">
           <a class="closebtn navbar-nav hidden" onclick="closeNav()">
             <span class="material-symbols-outlined">close</span>
           </a>
-          <a class="nav-link active" href="/lists">Lists</a>
+          <a class="nav-link" href="/lists">Lists</a>
           <a class="nav-link" href="/settings">Settings</a>
           <a class="nav-link" href="/">Help</a>
         </div>
@@ -33,12 +34,23 @@
     </nav>
   </header>
   <div class="overlay" onclick="closeNav()" id="menuOverlay"></div>
-
   <div id="root"></div>
-
   <script>
     const navMenu = document.getElementById("navMenu");
     const menuOverlay = document.getElementById("menuOverlay");
+    
+    const currentUrl = window.location.pathname;
+    const links = navMenu.getElementsByTagName("a");
+
+    for (let i = 0; i < links.length; i++) {
+      const linkUrl = links[i].getAttribute("href");
+      
+      if (linkUrl === currentUrl) {
+        links[i].classList.add("active");
+      } else {
+        links[i].classList.remove("active");
+      }
+    }
 
     function openNav() {
       navMenu.classList.add("nav-menu--open");

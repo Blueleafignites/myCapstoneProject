@@ -15,7 +15,7 @@
     .list,
     .modal,
     .task-description textarea,
-    .task-title input,
+    input,
     .dropdown-content,
     .dropdown-tags,
     .dropdown-tags li,
@@ -29,7 +29,8 @@
         background-color: grey;
     }
 
-    .card-date {
+    .card-date,
+    .settings-navbar a {
         color: lightgrey !important;
     }
 

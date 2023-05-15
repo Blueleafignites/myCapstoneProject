@@ -1,10 +1,14 @@
 import React from 'react';
 import { GoogleLogin } from '@react-oauth/google';
+import { useNavigate } from 'react-router-dom';
 import './login.css';
 
 function Login() {
+    const navigate = useNavigate()
+
     const responseMessage = (response) => {
         console.log(response);
+        navigate('/lists')
     };
 
     const errorMessage = (error) => {
@@ -33,10 +37,10 @@ function Login() {
                 </div>
                 <button className="sign-in" type="submit">Sign in</button>
                 <p className="login-text">
-                    Don't have an account? <a href="index.html">Sign up</a>
+                    Don't have an account? <a href="/">Sign up</a>
                 </p>
                 <p className="login-text">
-                    Forgot your password? <a href="index.html">Reset password</a>
+                    Forgot your password? <a href="/">Reset password</a>
                 </p>
             </div>
         </div>
