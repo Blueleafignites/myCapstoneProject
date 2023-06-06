@@ -2,6 +2,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mysql = require('mysql2');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const tokenBlacklist = new Set();
+require('dotenv').config();
 
 const app = express();
 const port = 3000;
@@ -20,6 +24,72 @@ connection.connect((err) => {
   if (err) throw err;
   console.log('Connected to database');
 });
+
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+
+  console.log('Received login request:', email, password);
+
+  const checkEmailQuery = `SELECT * FROM users WHERE email = ?`;
+  connection.query(checkEmailQuery, [email], (err, results) => {
+    if (err) {
+      console.error('Error executing database query:', err);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+
+    console.log('Query results:', results);
+
+    if (results.length === 0) {
+      console.log('User not found');
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    const user = results[0];
+
+    bcrypt.compare(password, user.password_hash, (err, isMatch) => {
+      if (err) {
+        console.error('Error comparing passwords:', err);
+        return res.status(500).json({ message: 'Internal server error' });
+      }
+
+      console.log('Password comparison result:', isMatch);
+
+      if (!isMatch) {
+        console.log('Invalid password');
+        return res.status(401).json({ message: 'Invalid email or password' });
+      }
+
+      const token = jwt.sign({ email: user.email }, process.env.SECRET_KEY);
+
+      console.log('Login successful');
+      res.json({ message: 'Login successful', token });
+    });
+  });
+});
+
+app.post('/logout', (req, res) => {
+  const token = req.headers.authorization;
+
+  if (!token || !token.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Invalid token' });
+  }
+
+  const tokenWithoutBearer = token.slice(7);
+  const decodedToken = jwt.decode(tokenWithoutBearer);
+
+  if (!decodedToken) {
+    return res.status(401).json({ message: 'Invalid token' });
+  }
+
+  if (tokenBlacklist.has(tokenWithoutBearer)) {
+    return res.status(401).json({ message: 'Invalid token' });
+  }
+
+  tokenBlacklist.add(tokenWithoutBearer);
+
+  res.json({ message: 'Logout successful' });
+});
+
 
 app.get('/priorities', (req, res) => {
   const query = 'SELECT * FROM priorities';
@@ -116,55 +186,6 @@ app.put('/lists/:listId/tasks', (req, res) => {
   });
 });
 
-app.get('/tasks', (req, res) => {
-  let orderBy = '';
-
-  if (req.query.sortByDueDate && req.query.sortAlphabetically) {
-    orderBy = 'ORDER BY deadline ASC, task_title ASC';
-  } else if (req.query.sortByDueDate) {
-    orderBy = 'ORDER BY deadline ASC';
-  } else if (req.query.sortAlphabetically) {
-    orderBy = 'ORDER BY task_title ASC';
-  } else {
-    orderBy = 'ORDER BY created_at ASC';
-  }
-
-  const query = `
-  SELECT 
-  tasks.task_id,
-  tasks.list_id,
-  tasks.priority_id,
-  tasks.task_title,
-  tasks.deadline,
-  tasks.task_description,
-  priorities.priority_color,
-  GROUP_CONCAT(tags.tag_id) AS tag_ids,
-  GROUP_CONCAT(tags.tag_color) AS tag_colors
-  FROM 
-    tasks
-  LEFT JOIN 
-    priorities
-  ON 
-    tasks.priority_id = priorities.priority_id
-  LEFT JOIN 
-    task_tags
-  ON 
-    tasks.task_id = task_tags.task_id
-  LEFT JOIN 
-    tags
-  ON 
-    task_tags.tag_id = tags.tag_id
-  GROUP BY 
-    tasks.task_id;
-    ${orderBy}
-  `;
-
-  connection.query(query, (err, results) => {
-    if (err) throw err;
-    res.send(results);
-  });
-});
-
 app.put('/tasks/:taskId', (req, res) => {
   const taskId = req.params.taskId;
   const updatedTask = req.body;
@@ -175,7 +196,7 @@ app.put('/tasks/:taskId', (req, res) => {
       task_title = '${updatedTask.task_title}',
       priority_id = ${updatedTask.priority_id},
       list_id = ${updatedTask.list_id},
-      deadline = '${updatedTask.deadline}',
+      deadline = ${updatedTask.deadline !== null ? `'${updatedTask.deadline}'` : null},
       task_description = '${updatedTask.task_description}'
     WHERE task_id = ${taskId}
   `;
@@ -184,54 +205,95 @@ app.put('/tasks/:taskId', (req, res) => {
     DELETE FROM task_tags WHERE task_id = ${taskId}
   `;
 
-  const insertTaskTagsQuery = `
-    INSERT INTO task_tags (task_id, tag_id)
-    VALUES ${updatedTask.tags.map(tagId => `(${taskId}, ${tagId})`).join(',')}
-  `;
+  const insertTaskTagsQuery = updatedTask.tags && updatedTask.tags.length > 0
+    ? `INSERT INTO task_tags (task_id, tag_id)
+     VALUES ${updatedTask.tags.map(tagId => `(${taskId}, ${tagId})`).join(',')}`
+    : '';
+
 
   connection.query(updateTaskQuery, (err, updateResult) => {
     if (err) throw err;
     connection.query(deleteTaskTagsQuery, (err, deleteResult) => {
       if (err) throw err;
-      connection.query(insertTaskTagsQuery, (err, insertResult) => {
-        if (err) throw err;
 
+      if (updatedTask.tags && updatedTask.tags.length > 0) {
+        connection.query(insertTaskTagsQuery, (err, insertResult) => {
+          if (err) throw err;
+
+          const selectTaskQuery = `
+              SELECT 
+                tasks.task_id,
+                tasks.list_id,
+                tasks.priority_id,
+                tasks.task_title,
+                tasks.deadline,
+                tasks.task_description,
+                priorities.priority_color,
+                GROUP_CONCAT(tags.tag_id) AS tag_ids,
+                GROUP_CONCAT(tags.tag_color) AS tag_colors
+              FROM 
+                tasks
+              LEFT JOIN 
+                priorities
+              ON 
+                tasks.priority_id = priorities.priority_id
+              LEFT JOIN 
+                task_tags
+              ON 
+                tasks.task_id = task_tags.task_id
+              LEFT JOIN 
+                tags
+              ON 
+                task_tags.tag_id = tags.tag_id
+              WHERE tasks.task_id = ${taskId}
+              GROUP BY 
+                tasks.task_id;
+            `;
+
+          connection.query(selectTaskQuery, (err, selectResult) => {
+            if (err) throw err;
+
+            res.send(selectResult[0]);
+          });
+        });
+      } else {
+        // No tags to insert, proceed with selecting the task
         const selectTaskQuery = `
-          SELECT 
-            tasks.task_id,
-            tasks.list_id,
-            tasks.priority_id,
-            tasks.task_title,
-            tasks.deadline,
-            tasks.task_description,
-            priorities.priority_color,
-            GROUP_CONCAT(tags.tag_id) AS tag_ids,
-            GROUP_CONCAT(tags.tag_color) AS tag_colors
-          FROM 
-            tasks
-          LEFT JOIN 
-            priorities
-          ON 
-            tasks.priority_id = priorities.priority_id
-          LEFT JOIN 
-            task_tags
-          ON 
-            tasks.task_id = task_tags.task_id
-          LEFT JOIN 
-            tags
-          ON 
-            task_tags.tag_id = tags.tag_id
-          WHERE tasks.task_id = ${taskId}
-          GROUP BY 
-            tasks.task_id;
-        `;
+            SELECT 
+              tasks.task_id,
+              tasks.list_id,
+              tasks.priority_id,
+              tasks.task_title,
+              tasks.deadline,
+              tasks.task_description,
+              priorities.priority_color,
+              GROUP_CONCAT(tags.tag_id) AS tag_ids,
+              GROUP_CONCAT(tags.tag_color) AS tag_colors
+            FROM 
+              tasks
+            LEFT JOIN 
+              priorities
+            ON 
+              tasks.priority_id = priorities.priority_id
+            LEFT JOIN 
+              task_tags
+            ON 
+              tasks.task_id = task_tags.task_id
+            LEFT JOIN 
+              tags
+            ON 
+              task_tags.tag_id = tags.tag_id
+            WHERE tasks.task_id = ${taskId}
+            GROUP BY 
+              tasks.task_id;
+          `;
 
         connection.query(selectTaskQuery, (err, selectResult) => {
           if (err) throw err;
 
           res.send(selectResult[0]);
         });
-      });
+      }
     });
   });
 });
@@ -285,15 +347,61 @@ app.put('/priorities/:id', (req, res) => {
 
 app.delete('/tags/:tagId', (req, res) => {
   const tagId = req.params.tagId;
-  const deleteTagsQuery = `DELETE FROM tags WHERE tag_id = ${tagId}`;
   const deleteTaskTagsQuery = `DELETE FROM task_tags WHERE tag_id = ${tagId}`;
+  const deleteTagsQuery = `DELETE FROM tags WHERE tag_id = ${tagId}`;
 
-  connection.query(deleteTagsQuery, (err, results) => {
+  connection.query(deleteTaskTagsQuery, (err, taskTagsResults) => {
     if (err) throw err;
-    connection.query(deleteTaskTagsQuery, (err, results) => {
+    connection.query(deleteTagsQuery, (err, tagsResult) => {
       if (err) throw err;
-      res.send(results);
+      res.send(tagsResult);
     });
+  });
+});
+
+app.post('/tags', (req, res) => {
+  const tag = req.body;
+
+  const query = `
+    INSERT INTO tags (tag_name, tag_color)
+    VALUES (?, ?);
+  `;
+  const values = [tag.tag_name, tag.tag_color];
+
+  connection.query(query, values, (err, results) => {
+    if (err) throw err;
+    const tagId = results.insertId;
+
+    res.send({ tagId });
+  });
+});
+
+app.put('/tags/:id', (req, res) => {
+  const tagId = req.params.id;
+  const updatedTag = req.body;
+  const updateTagQuery = `
+    UPDATE tags
+    SET
+      tag_name = '${updatedTag.tag_name}',
+      tag_color = '${updatedTag.tag_color}'
+    WHERE
+      tag_id = ${tagId}
+  `;
+
+  connection.query(updateTagQuery, (err, results) => {
+    if (err) throw err;
+    res.send(results);
+  });
+});
+
+app.put('/priorities/color/:id', (req, res) => {
+  const id = req.params.id;
+  const color = req.body.color;
+  const sql = 'UPDATE priorities SET priority_color = ? WHERE priority_id = ?';
+
+  connection.query(sql, [color, id], (err, results, fields) => {
+    if (err) throw err;
+    res.send(results);
   });
 });
 

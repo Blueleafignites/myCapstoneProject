@@ -1,41 +1,69 @@
-import React from 'react';
-import { GoogleLogin } from '@react-oauth/google';
-import { useNavigate } from 'react-router-dom';
-import './login.css';
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import "./login.css";
 
 function Login() {
-    const navigate = useNavigate()
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
-    const responseMessage = (response) => {
-        console.log(response);
-        navigate('/lists')
+    const handleEmailChange = (e) => {
+        setEmail(e.target.value);
     };
 
-    const errorMessage = (error) => {
-        console.log(error);
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
+    };
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+
+        axios
+            .post('http://localhost:3000/login', { email, password })
+            .then((response) => {
+                const { token } = response.data;
+                localStorage.setItem('token', token);
+                console.log(response.data);
+                navigate('/lists');
+                window.location.reload();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
     };
 
     return (
         <div className="container">
             <div className="login-box">
                 <h2>Sign in</h2>
-                <div className="google-login-button">
-                    <GoogleLogin
-                        clientId="189940497823-ktv9nu0hu5j5dqcfvstmd2tlt9uva9h7.apps.googleusercontent.com"
-                        onSuccess={responseMessage}
-                        onError={errorMessage}
-                        render={({ onClick }) => (
-                            <button onClick={onClick} type="submit"> Sign in with Google</button>
-                        )}
-                    />
-                </div>
-                <div className="login-group">
-                    <input type="email" className="login-input" id="email" placeholder="Email address" />
-                </div>
-                <div className="login-group">
-                    <input type="password" className="login-input" id="password" placeholder="Password" />
-                </div>
-                <button className="sign-in" type="submit">Sign in</button>
+                <form onSubmit={handleLogin}>
+                    <div className="login-group">
+                        <input
+                            type="email"
+                            className="login-input"
+                            id="email"
+                            placeholder="Email address"
+                            value={email}
+                            onChange={handleEmailChange}
+                            required
+                        />
+                    </div>
+                    <div className="login-group">
+                        <input
+                            type="password"
+                            className="login-input"
+                            id="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={handlePasswordChange}
+                            required
+                        />
+                    </div>
+                    <button className="sign-in" type="submit">
+                        Sign in
+                    </button>
+                </form>
                 <p className="login-text">
                     Don't have an account? <a href="/">Sign up</a>
                 </p>

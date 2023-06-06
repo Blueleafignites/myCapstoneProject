@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-function PriorityDropdown({ task, priorities, setPriorities, selectedPriority, setSelectedPriority, updatePriorityName }) {
+function PriorityDropdown({ task, priorities, setPriorities, selectedPriority, setSelectedPriority }) {
     const [showPriorityDropdown, setShowPriorityDropdown] = useState(false);
     const [showEditPriorityDropdown, setShowEditPriorityDropdown] = useState(false);
     const [clickedPriority, setClickedPriority] = useState(null);
@@ -44,7 +45,6 @@ function PriorityDropdown({ task, priorities, setPriorities, selectedPriority, s
         setShowPriorityDropdown(false);
         setShowEditPriorityDropdown(!showEditPriorityDropdown);
     };
-
     const handleSaveClick = async () => {
         if (!hasChanges) {
             return;
@@ -59,7 +59,7 @@ function PriorityDropdown({ task, priorities, setPriorities, selectedPriority, s
         };
 
         try {
-            await updatePriorityName(clickedPriority.priority_id, updatedPriority);
+            const res = await axios.put(`http://localhost:3000/priorities/${clickedPriority.priority_id}`, updatedPriority);
             const updatedPriorities = priorities.map((priority) => {
                 if (priority.priority_id === clickedPriority.priority_id) {
                     return { ...priority, priority_name: editedPriorityName };
@@ -77,8 +77,11 @@ function PriorityDropdown({ task, priorities, setPriorities, selectedPriority, s
             setHasChanges(false);
 
             setShowEditPriorityDropdown(false);
+
+            return res.data;
         } catch (error) {
             console.error(error);
+            return null;
         }
     };
 
@@ -137,10 +140,8 @@ function PriorityDropdown({ task, priorities, setPriorities, selectedPriority, s
                             </span>
                         </div>
                     )}
-                    <label>Title
-                        <input
-                            type="text"
-                            value={editedPriorityName}
+                    <label><b>Title</b>
+                        <input className="label-input" type="text" value={editedPriorityName}
                             onChange={(e) => {
                                 setEditedPriorityName(e.target.value);
                                 setHasChanges(true);

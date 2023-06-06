@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
+import axios from 'axios';
 import PriorityDropdown from "./priority";
 import TagDropdown from "./tags";
-import './Task.css';
+import "./Task.css";
 
-function Task({ onClose, modalRef, task, priorities, setPriorities, tags, setTags, lists, setTasks, deleteTaskById, updateTask, addTask, updatePriorityName, deleteTag }) {
+function Task({ onClose, modalRef, tasks, task, priorities, setPriorities, tags, setTags, lists, setTasks }) {
     const [taskTitle, setTaskTitle] = useState(task.task_title);
     const [selectedPriority, setSelectedPriority] = useState(task.priority_id ? priorities.find(p => p.priority_id === task.priority_id) : null);
     const [selectedTags, setSelectedTags] = useState(task.tag_ids ? task.tag_ids.split(",") : []);
@@ -45,11 +46,11 @@ function Task({ onClose, modalRef, task, priorities, setPriorities, tags, setTag
         setSelectedDeadline(event.target.value);
     };
 
-    function handleSaveTask() {
-        if (!taskTitle) {
-            alert("Task must have a title.")
+    async function handleSaveTask() {
+        if (taskTitle.trim() === "") {
+            alert("Task must have a title.");
         } else {
-            const updatedTask = {
+            const newTask = {
                 task_title: taskTitle,
                 priority_id: selectedPriority ? selectedPriority.priority_id : null,
                 tags: selectedTags,
@@ -57,21 +58,35 @@ function Task({ onClose, modalRef, task, priorities, setPriorities, tags, setTag
                 deadline: selectedDeadline,
                 task_description: taskDescription,
             };
-    
-            console.log("Title: ", taskTitle);
-            console.log("Priority: ", selectedPriority ? selectedPriority.priority_id : null);
-            console.log("Tag(s): ", selectedTags);
-            console.log("List: ", selectedList);
-            console.log("Deadline: ", selectedDeadline);
-            console.log("Description: ", taskDescription);
-    
-            if (task.task_id) {
-                updateTask(task.task_id, updatedTask);
-            } else {
-                addTask(updatedTask);
+
+            try {
+                if (task.task_id) {
+                    const updatedTask = {
+                        ...task,
+                        ...newTask,
+                    };
+
+                    const updatedTasks = tasks.map((t) => {
+                        if (t.task_id === task.task_id) {
+                            return updatedTask;
+                        }
+                        return t;
+                    });
+                    setTasks(updatedTasks);
+
+                    await axios.put(`http://localhost:3000/tasks/${task.task_id}`, updatedTask);
+                } else {
+                    const res = await axios.post('http://localhost:3000/tasks', newTask);
+                    const addedTask = res.data.taskId;
+
+                    setTasks((prevState) => [...prevState, addedTask]);
+                }
+
+                onClose();
+                window.location.reload();
+            } catch (error) {
+                console.error(error);
             }
-    
-            onClose();
         }
     }
 
@@ -88,15 +103,18 @@ function Task({ onClose, modalRef, task, priorities, setPriorities, tags, setTag
 
     async function handleConfirmDelete() {
         try {
-            await deleteTaskById(task.task_id);
-            setTasks((prevState) => prevState.filter((t) => t.task_id !== task.task_id));
+            const res = await axios.delete(`http://localhost:3000/tasks/${task.task_id}`);
+            const deletedTaskId = res.data.task_id;
 
+            setTasks((prevState) => prevState.filter((task) => task.task_id !== deletedTaskId));
             onClose();
             setShowConfirmation(false);
             document.body.classList.remove('no-click');
         } catch (error) {
             console.error(error);
         }
+
+        window.location.reload()
     }
 
     let confirmationOpened = false;
@@ -130,11 +148,11 @@ function Task({ onClose, modalRef, task, priorities, setPriorities, tags, setTag
                     <div className="task-info">
                         <div className="taskPriority">
                             <label htmlFor="taskPriority" className="priority-label">Priority:</label>
-                            <PriorityDropdown task={task} priorities={priorities} setPriorities={setPriorities} selectedPriority={selectedPriority} setSelectedPriority={setSelectedPriority} updatePriorityName={updatePriorityName} />
+                            <PriorityDropdown task={task} priorities={priorities} setPriorities={setPriorities} selectedPriority={selectedPriority} setSelectedPriority={setSelectedPriority} />
                         </div>
                         <div className="taskTags">
                             <label htmlFor="taskTags" className="tags-label">Tags: </label>
-                            <TagDropdown task={task} tags={tags} setTags={setTags} selectedTags={selectedTags} setSelectedTags={setSelectedTags} deleteTag={deleteTag} />
+                            <TagDropdown task={task} tags={tags} setTags={setTags} selectedTags={selectedTags} setSelectedTags={setSelectedTags} />
                         </div>
                         <div className="task-list">
                             <label htmlFor="listSelect">Add to list: </label>

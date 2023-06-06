@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 import './settings.css';
 
 function Settings({ darkMode, setDarkMode }) {
-
+  const navigate  = useNavigate();
 
   const handleToggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -43,6 +44,30 @@ function Settings({ darkMode, setDarkMode }) {
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleLogout = () => {
+    const token = localStorage.getItem("token");
+  
+    axios
+      .post(
+        "http://localhost:3000/logout",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, 
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response.data);
+        localStorage.removeItem("token");
+        navigate("/login");
+        window.location.reload()
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
 
   return (
@@ -154,7 +179,7 @@ function Settings({ darkMode, setDarkMode }) {
 
         <h2 id="logout">Logout</h2>
         <hr />
-        <button>Logout</button>
+        <button onClick={handleLogout}>Logout</button>
       </div>
     </div>
   );

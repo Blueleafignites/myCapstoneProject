@@ -169,3 +169,30 @@ input:checked+.slider {
 input:checked+.slider:before {
     transform: translateX(20px);
 }
+
+@media screen and (max-width: 768px) {
+    .settings-container {
+      flex-direction: column;
+      margin: 0 10%;
+    }
+  
+    .settings-navbar {
+      width: 100%;
+      align-items: center;
+      padding: 10px;
+      height: auto;
+    }
+  
+    .settings-body {
+      padding: 10px;
+    }
+  
+    .settings-body h2 {
+      font-size: 20px;
+    }
+  
+    .body-text {
+      margin: 0 10px 30px;
+    }
+  }
+  

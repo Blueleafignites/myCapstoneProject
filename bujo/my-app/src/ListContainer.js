@@ -1,8 +1,9 @@
 import { useState, useRef } from "react";
+import axios from 'axios';
 import Task from "./Task";
 import './App.css';
 
-function ListContainer({ listId, title, priorities, setPriorities, tags, setTags, lists, tasks, setTasks, deleteTasksByListId, deleteTaskById, moveAllTasksToList, getTasks, updateTask, addTask, updatePriorityName, deleteTag }) {
+function ListContainer({ listId, title, priorities, setPriorities, tags, setTags, lists, tasks, setTasks }) {
   const modalRef = useRef();
   const overlayId = `modalOverlay-${title}`;
 
@@ -41,14 +42,7 @@ function ListContainer({ listId, title, priorities, setPriorities, tags, setTags
   };
 
   function handleSaveSort() {
-    getTasks(sortByDueDate, sortAlphabetically)
-      .then(data => {
-        setTasks(data);
-        setShowSortList(false);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+   
   }
 
   const handleMoveAllClick = () => {
@@ -59,17 +53,19 @@ function ListContainer({ listId, title, priorities, setPriorities, tags, setTags
 
   const handleSaveClick = async () => {
     const targetList = availableLists.find((list) => list.title === selectedList);
-    const targetListId = targetList.id;
     const movedTasks = tasks.filter((task) => task.list_id === listId);
     const movedTaskIds = movedTasks.map((task) => task.task_id);
-
+  
     try {
       if (targetList) {
-        await moveAllTasksToList(movedTaskIds, targetListId);
+        await axios.put(`http://localhost:3000/lists/${targetList.id}/tasks`, {
+          taskIds: movedTaskIds,
+        });
+  
         setTasks((prevTasks) =>
           prevTasks.map((task) =>
             movedTaskIds.includes(task.id)
-              ? { ...task, list_id: targetListId }
+              ? { ...task, list_id: targetList.id }
               : task
           )
         );
@@ -77,10 +73,11 @@ function ListContainer({ listId, title, priorities, setPriorities, tags, setTags
     } catch (error) {
       console.error(error);
     }
-
+  
     setShowMoveAll(false);
+    window.location.reload();
   };
-
+  
   const handleDeleteAllClick = async () => {
     setShowConfirmation(true);
     document.addEventListener('click', handleOutsideClick);
@@ -110,7 +107,7 @@ function ListContainer({ listId, title, priorities, setPriorities, tags, setTags
 
   const handleConfirmDelete = async () => {
     try {
-      await deleteTasksByListId(listId);
+      await axios.delete(`http://localhost:3000/lists/${listId}/tasks`);
       setTasks((prevState) => prevState.filter((t) => t.list_id !== listId));
       setShowConfirmation(false);
     } catch (error) {
@@ -118,7 +115,7 @@ function ListContainer({ listId, title, priorities, setPriorities, tags, setTags
     }
     document.body.classList.remove('no-click');
   };
-
+  
   const handleCloseModal = () => {
     setShowModal(false);
     document.getElementById(overlayId).style.display = "none";
@@ -179,7 +176,7 @@ function ListContainer({ listId, title, priorities, setPriorities, tags, setTags
 
       <div className="dropdown">
         {showSortList && (
-          <div className="dropdown-tags">
+          <div className="listActions-window">
             <div className="dropdown-header">
               <div className="dropdown-title">
                 <p>Sort List</p>
@@ -206,7 +203,7 @@ function ListContainer({ listId, title, priorities, setPriorities, tags, setTags
 
       <div className="dropdown">
         {showMoveAll && (
-          <div className="dropdown-tags">
+          <div className="listActions-window">
             <div className="dropdown-header">
               <div className="dropdown-title">
                 <p>Move Tasks</p>
@@ -252,7 +249,7 @@ function ListContainer({ listId, title, priorities, setPriorities, tags, setTags
 
       {showModal && (
         <>
-          <Task onClose={handleCloseModal} modalRef={modalRef} task={task} priorities={priorities} setPriorities={setPriorities} tags={tags} setTags={setTags} lists={lists} setTasks={setTasks} deleteTaskById={deleteTaskById} updateTask={updateTask} addTask={addTask} updatePriorityName={updatePriorityName} deleteTag={deleteTag} />
+          <Task onClose={handleCloseModal} modalRef={modalRef} tasks={tasks} task={task} priorities={priorities} setPriorities={setPriorities} tags={tags} setTags={setTags} lists={lists} setTasks={setTasks} />
         </>
       )}
       <div id={overlayId} className="modal-overlay" onClick={() => handleCloseModal()}></div>

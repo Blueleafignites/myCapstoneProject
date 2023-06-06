@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-function TagDropdown({ task, tags, setTags, selectedTags, setSelectedTags, deleteTag }) {
+function TagDropdown({ task, tags, setTags, selectedTags, setSelectedTags }) {
     const [showTagDropdown, setShowTagDropdown] = useState(false);
+    const [showAddTagDropdown, setShowAddTagDropdown] = useState(false);
     const [showEditTagDropdown, setShowEditTagDropdown] = useState(false);
-    const [clickedTag, setClickedTag] = useState(null);
-    const [editedTagName, setEditedTagName] = useState("");
-    const [hasChanges, setHasChanges] = useState(false);
 
+    const [clickedTagTitle, setClickedTagTitle] = useState("");
+    const [clickedTagColor, setClickedTagColor] = useState("");
+    const [clickedTagId, setClickedTagId] = useState("");
+    const [tagTitle, setTagTitle] = useState("");
+    const [tagColor, setTagColor] = useState("");
 
     const handleAddTagClick = () => {
         setShowTagDropdown(!showTagDropdown);
@@ -34,47 +38,114 @@ function TagDropdown({ task, tags, setTags, selectedTags, setSelectedTags, delet
         }
     };
 
+    const handleAddNewTagDropdown = () => {
+        setShowTagDropdown(false);
+        setShowAddTagDropdown(!showAddTagDropdown);
+    };
+
+    const handleColorChange = (e) => {
+        const colorHex = e.target.value;
+        const formattedHex = colorHex.replace(/[^A-Fa-f0-9]/g, "");
+
+        setTagColor("#" + formattedHex.slice(0, 6))
+        setClickedTagColor("#" + formattedHex.slice(0, 6))
+    };
+
+    const handleAddTag = async () => {
+        if (tagTitle.trim() === "") {
+            alert("Tag name cannot be empty.");
+            return;
+        }
+
+        if (tagColor.length !== 7) {
+            alert("Hex code is not valid.");
+            return;
+        }
+
+        const tagLimit = 10;
+        const currentTagCount = tags.length;
+
+        if (currentTagCount >= tagLimit) {
+            alert("Cannot add more than 10 tags.");
+            return;
+        }
+
+        const newTag = {
+            tag_name: tagTitle.trim(),
+            tag_color: tagColor,
+        };
+
+        try {
+            const res = await axios.post('http://localhost:3000/tags', newTag);
+            setShowAddTagDropdown(false);
+            setShowTagDropdown(true);
+            return res.data.tagId;
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
+    };
+
+    const handleEditTag = async (tagId) => {
+        if (clickedTagTitle.trim() === "") {
+            alert("Tag name cannot be empty.");
+            return;
+        }
+
+        if (clickedTagColor.length !== 7) {
+            alert("Hex code is not valid.");
+            return;
+        }
+
+        const updatedTag = {
+            tag_name: clickedTagTitle.trim(),
+            tag_color: clickedTagColor,
+        };
+
+        try {
+            const res = await axios.put(`http://localhost:3000/tags/${tagId}`, updatedTag);
+            setShowEditTagDropdown(false);
+            setShowTagDropdown(true);
+            return res.data;
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
+    };
+
+    const handleDeleteTag = async (tagId) => {
+        try {
+            const tagToDelete = tags.find((tag) => tag.tag_id === tagId);
+
+            if (!tagToDelete) {
+                console.error("Tag not found");
+                return;
+            }
+
+            await axios.delete(`http://localhost:3000/tags/${tagId}`);
+            setTags(tags.filter((tag) => tag.tag_id !== tagId));
+            setSelectedTags(selectedTags.filter((tag) => tag !== tagId));
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     const handleEditTagDropdown = (tag) => {
-        setClickedTag(tag);
-        setEditedTagName(tag.tag_name);
+        setClickedTagTitle(tag.tag_name);
+        setClickedTagColor(tag.tag_color)
+        setClickedTagId(tag.tag_id)
 
         setShowTagDropdown(false);
         setShowEditTagDropdown(!showEditTagDropdown);
     };
 
-    function handleConfirmEdit() {
-        console.log(clickedTag)
-
-        if (!hasChanges) {
-            return;
-        }
-        if (editedTagName.trim() === "") {
-            alert("Priority name cannot be empty.");
-            return;
-        }
-
-        setClickedTag(null);
-        setEditedTagName("");
-        setHasChanges(false);
-        
-        setShowEditTagDropdown(false);
-    }
-
     const handleGoBackClick = () => {
-        setHasChanges(false);
-        setEditedTagName("");
+        setTagTitle("");
+        setTagColor("");
 
+        setShowAddTagDropdown(false);
         setShowEditTagDropdown(false);
         setShowTagDropdown(true);
-    };
-
-    const handleDeleteTag = async (tagId) => {
-        try {
-            await deleteTag(tagId);
-            setTags(tags.filter((tag) => tag.tag_id !== tagId));
-        } catch (error) {
-            console.error(error);
-        }
     };
 
     return (
@@ -105,10 +176,49 @@ function TagDropdown({ task, tags, setTags, selectedTags, setSelectedTags, delet
                         ))}
                     </ul>
                     <div className="new-tag-button">
-                        <button type="button" className="add-new-tag">Add Tag</button>
+                        <button type="button" className="add-new-tag" onClick={handleAddNewTagDropdown}>Add Tag</button>
                     </div>
                 </div>
             )}
+
+            {showAddTagDropdown && (
+                <div className="dropdown-tags">
+                    <div className="header-container">
+                        <div className="arrow-back">
+                            <span className="material-symbols-outlined" onClick={handleGoBackClick}>arrow_back</span>
+                        </div>
+                        <div className="dropdown-title-edit">
+                            <p>Add Tag</p>
+                        </div>
+                        <div className="dropdown-close">
+                            <span className="material-symbols-outlined" onClick={() => setShowAddTagDropdown(false)}>close</span>
+                        </div>
+                    </div>
+                    <hr />
+
+                    <div className="edit-tag">
+                        <span className="priority" style={{ backgroundColor: tagColor }}>{tagTitle}</span>
+                    </div>
+
+                    <label className="edit-tag-name">
+                        <span><b>Title</b></span>
+                        <input className="label-input" type="text" value={tagTitle} onChange={(e) => setTagTitle(e.target.value)} placeholder="Enter a tag name..." />
+                    </label>
+                    <label>
+                        <span><b>Color</b></span>
+                        <input className="label-input" type="text" value={tagColor ? tagColor : "#"} onChange={handleColorChange} maxLength={7} placeholder="Enter a hex code..." />
+                    </label>
+                    <div className="dropdown-edit-buttons">
+                        <div>
+                            <button type="button" onClick={handleAddTag}>Save</button>
+                        </div>
+                        <div className="cancel-btn">
+                            <button type="button" onClick={handleGoBackClick}>Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {showEditTagDropdown && (
                 <div className="dropdown-tags">
                     <div className="header-container">
@@ -123,30 +233,24 @@ function TagDropdown({ task, tags, setTags, selectedTags, setSelectedTags, delet
                         </div>
                     </div>
                     <hr />
-                    {clickedTag && (
+                    {clickedTagTitle && (
                         <div className="edit-tag">
-                            <span className="priority" style={{ background: clickedTag.tag_color }}>
-                                {clickedTag.tag_name}
+                            <span className="priority" style={{ background: clickedTagColor }}>
+                                {clickedTagTitle}
                             </span>
                         </div>
                     )}
-                    <label>Title
-                        <input
-                            type="text"
-                            value={editedTagName}
-                            onChange={(e) => {
-                                setEditedTagName(e.target.value);
-                                setHasChanges(true);
-                                if (clickedTag) {
-                                    const newTag = { ...clickedTag, tag_name: e.target.value };
-                                    setClickedTag(newTag);
-                                }
-                            }}
-                        />
+                    <label className="edit-tag-name">
+                        <span><b>Title</b></span>
+                        <input className="label-input" type="text" value={clickedTagTitle} onChange={(e) => { setClickedTagTitle(e.target.value) }} />
+                    </label>
+                    <label>
+                        <span><b>Color</b></span>
+                        <input className="label-input" type="text" value={clickedTagColor ? clickedTagColor : "#"} onChange={handleColorChange} maxLength={7} placeholder="Enter a hex code..." />
                     </label>
                     <div className="dropdown-edit-buttons">
                         <div>
-                            <button type="button" onClick={handleConfirmEdit}>Save</button>
+                            <button type="button" onClick={() => handleEditTag(clickedTagId)}>Save</button>
                         </div>
                         <div className="cancel-btn">
                             <button type="button" onClick={handleGoBackClick}>Cancel</button>
@@ -154,12 +258,18 @@ function TagDropdown({ task, tags, setTags, selectedTags, setSelectedTags, delet
                     </div>
                 </div>
             )}
+
             <div className="add-tags">
                 {selectedTags.length > 0 && (
                     <div className="selected-tags">
                         <div className="tags">
                             {selectedTags.map((selectedTag) => {
                                 const tag = tags.find((tag) => tag.tag_id.toString() === selectedTag);
+
+                                if (!tag || !tag.tag_id || !tag.tag_color || !tag.tag_name) {
+                                    return null;
+                                }
+
                                 return (
                                     <span className="tag" key={tag.tag_id} style={{ background: tag.tag_color }}>{tag.tag_name}</span>
                                 );
@@ -167,6 +277,7 @@ function TagDropdown({ task, tags, setTags, selectedTags, setSelectedTags, delet
                         </div>
                     </div>
                 )}
+
                 <div className="tagDrop-btn">
                     <span className="material-symbols-outlined" onClick={handleAddTagClick}>add</span>
                 </div>
