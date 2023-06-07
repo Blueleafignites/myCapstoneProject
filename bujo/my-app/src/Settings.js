@@ -10,6 +10,7 @@ function Settings({ darkMode, setDarkMode }) {
     setDarkMode(!darkMode);
   };
 
+  // https://www.tutorialspoint.com/localstorage-in-reactjs
   const [selectedColor, setSelectedColor] = useState(
     localStorage.getItem('selectedColor') || 'default'
   );
@@ -18,6 +19,7 @@ function Settings({ darkMode, setDarkMode }) {
     localStorage.setItem('selectedColor', selectedColor);
   }, [selectedColor]);
 
+  // https://coolors.co/3fe4ec-fae459-c465d3-7cc140
   const handleColorChange = async (event) => {
     const newColor = event.target.value;
     setSelectedColor(newColor);

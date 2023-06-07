@@ -18,6 +18,10 @@ function App() {
     };
   }, [darkMode]);
 
+  /*
+    https://stackoverflow.com/questions/69923420/how-to-use-private-route-in-react-router-domv6
+    https://www.javatpoint.com/browserrouter-in-react#:~:text=React%20Router%20is%20a%20standard%20library%20for%20routing,keeps%20the%20UI%20in%20sync%20with%20the%20URL.
+  */
   return (
     <BrowserRouter>
       <Routes>

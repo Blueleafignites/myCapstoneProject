@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+// Renders a dropdown interface for users to select a priority for a task and allows users to edit a priority's name
 function PriorityDropdown({ task, priorities, setPriorities, selectedPriority, setSelectedPriority }) {
     const [showPriorityDropdown, setShowPriorityDropdown] = useState(false);
     const [showEditPriorityDropdown, setShowEditPriorityDropdown] = useState(false);
@@ -31,7 +32,6 @@ function PriorityDropdown({ task, priorities, setPriorities, selectedPriority, s
         };
     }, []);
 
-
     const handleDocumentClick = (e) => {
         if (!e.target.closest(".dropdown") && !e.target.closest(".dropdown-tags")) {
             setShowPriorityDropdown(false);
@@ -45,6 +45,7 @@ function PriorityDropdown({ task, priorities, setPriorities, selectedPriority, s
         setShowPriorityDropdown(false);
         setShowEditPriorityDropdown(!showEditPriorityDropdown);
     };
+    
     const handleSaveClick = async () => {
         if (!hasChanges) {
             return;

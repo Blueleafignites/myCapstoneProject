@@ -13,10 +13,20 @@ const port = 3000;
 app.use(bodyParser.json());
 app.use(cors());
 
+/*
+  https://stackoverflow.com/questions/48699820/how-do-i-hide-an-api-key-in-create-react-app
+  https://www.dotenv.org/docs/quickstart
+  https://nodejs.org/en/about
+
+  The API sets up a server using Express.js framework on port 3000. It establishes a 
+  connection with MySQL database and handles various API routes related to user 
+  authentication, task management, and CRUD operations for priorities and tags.
+*/
+
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'Mettler02?',
+  password: process.env.DB_PASSWORD,
   database: 'raven_bujo'
 });
 
@@ -257,7 +267,6 @@ app.put('/tasks/:taskId', (req, res) => {
           });
         });
       } else {
-        // No tags to insert, proceed with selecting the task
         const selectTaskQuery = `
             SELECT 
               tasks.task_id,

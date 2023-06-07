@@ -2,6 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Lists from './Lists';
 
+/*
+  https://www.digitalocean.com/community/tutorials/react-axios-react
+
+  Fetches data from my API using Axios and sets the fetched data into state variables for priorities, tags, and tasks. 
+  The fetched data is then passed as props to another component called "Lists."
+*/
 function Data() {
   const [priorities, setPriorities] = useState([]);
   const [tags, setTags] = useState([]);

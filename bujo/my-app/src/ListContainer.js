@@ -3,6 +3,14 @@ import axios from 'axios';
 import Task from "./Task";
 import './App.css';
 
+/*
+  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString
+
+  ListContainer is responsible for rendering three lists and their respective tasks. It utilizes the useState hook 
+  to manage different features and actions within each list. These features include the visibility of the 
+  Task Modal, sorting and moving tasks, and confirming task deletion through a dialog.
+*/
+
 function ListContainer({ listId, title, priorities, setPriorities, tags, setTags, lists, tasks, setTasks }) {
   const modalRef = useRef();
   const overlayId = `modalOverlay-${title}`;
@@ -90,7 +98,6 @@ function ListContainer({ listId, title, priorities, setPriorities, tags, setTags
   }
 
   let confirmationOpened = false;
-
   function handleOutsideClick(event) {
     const confirmationContent = document.querySelector('.delete-confirmation-content');
     const deleteBtn = document.querySelector('.delete-btn button');

@@ -23,6 +23,11 @@
   pointer-events: none;
 }
 
+/*
+  https://stackoverflow.com/questions/57262508/add-css-shaking-animation-to-a-button-without-hover
+  https://stackoverflow.com/questions/38132700/css-wiggle-shake-effect
+*/
+
 .animation {
   animation-name: shake;
   animation-duration: 0.5s;

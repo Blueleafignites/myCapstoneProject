@@ -4,6 +4,12 @@ import PriorityDropdown from "./priority";
 import TagDropdown from "./tags";
 import "./Task.css";
 
+/* 
+    https://www.w3schools.com/w3css/w3css_modal.asp
+
+    Renders the Task modal. It uses various state variables to manage a task's properties, such as title, priority, 
+    tags, list, deadline, and description. It allows the user to add, edit, or delete a task.
+*/
 function Task({ onClose, modalRef, tasks, task, priorities, setPriorities, tags, setTags, lists, setTasks }) {
     const [taskTitle, setTaskTitle] = useState(task.task_title);
     const [selectedPriority, setSelectedPriority] = useState(task.priority_id ? priorities.find(p => p.priority_id === task.priority_id) : null);
@@ -20,6 +26,7 @@ function Task({ onClose, modalRef, tasks, task, priorities, setPriorities, tags,
         setSelectedList(selectedValue);
     };
 
+    // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/date
     useEffect(() => {
         if (task.deadline) {
             setShowDatePicker(true);
@@ -83,7 +90,7 @@ function Task({ onClose, modalRef, tasks, task, priorities, setPriorities, tags,
                 }
 
                 onClose();
-                window.location.reload();
+                window.location.reload(); // https://stackoverflow.com/questions/3715047/how-to-reload-a-page-using-javascript
             } catch (error) {
                 console.error(error);
             }
@@ -118,7 +125,6 @@ function Task({ onClose, modalRef, tasks, task, priorities, setPriorities, tags,
     }
 
     let confirmationOpened = false;
-
     function handleOutsideClick(event) {
         const confirmationContent = document.querySelector('.confirmation-content');
         const deleteBtn = document.querySelector('.delete-btn button');
@@ -152,7 +158,7 @@ function Task({ onClose, modalRef, tasks, task, priorities, setPriorities, tags,
                         </div>
                         <div className="taskTags">
                             <label htmlFor="taskTags" className="tags-label">Tags: </label>
-                            <TagDropdown task={task} tags={tags} setTags={setTags} selectedTags={selectedTags} setSelectedTags={setSelectedTags} />
+                            <TagDropdown tags={tags} setTags={setTags} selectedTags={selectedTags} setSelectedTags={setSelectedTags} />
                         </div>
                         <div className="task-list">
                             <label htmlFor="listSelect">Add to list: </label>
@@ -162,7 +168,6 @@ function Task({ onClose, modalRef, tasks, task, priorities, setPriorities, tags,
                                 ))}
                             </select>
                         </div>
-
                         <div className="deadline">
                             <label htmlFor={`deadline-${task.task_id}`}>Deadline:</label>
                             {showDatePicker && (
@@ -174,7 +179,6 @@ function Task({ onClose, modalRef, tasks, task, priorities, setPriorities, tags,
                                 </span>
                             </div>
                         </div>
-
                     </div>
                     <div className="task-actions">
                         <div className="actions-button">

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function TagDropdown({ task, tags, setTags, selectedTags, setSelectedTags }) {
+// Renders a dropdown interface for managing tags. It allows users to add, edit, and delete tags.
+function TagDropdown({ tags, setTags, selectedTags, setSelectedTags }) {
     const [showTagDropdown, setShowTagDropdown] = useState(false);
     const [showAddTagDropdown, setShowAddTagDropdown] = useState(false);
     const [showEditTagDropdown, setShowEditTagDropdown] = useState(false);
@@ -43,6 +44,7 @@ function TagDropdown({ task, tags, setTags, selectedTags, setSelectedTags }) {
         setShowAddTagDropdown(!showAddTagDropdown);
     };
 
+    // https://stackoverflow.com/questions/62570261/accept-hex-only-input
     const handleColorChange = (e) => {
         const colorHex = e.target.value;
         const formattedHex = colorHex.replace(/[^A-Fa-f0-9]/g, "");
@@ -77,6 +79,7 @@ function TagDropdown({ task, tags, setTags, selectedTags, setSelectedTags }) {
 
         try {
             const res = await axios.post('http://localhost:3000/tags', newTag);
+
             setShowAddTagDropdown(false);
             setShowTagDropdown(true);
             return res.data.tagId;
@@ -104,6 +107,7 @@ function TagDropdown({ task, tags, setTags, selectedTags, setSelectedTags }) {
 
         try {
             const res = await axios.put(`http://localhost:3000/tags/${tagId}`, updatedTag);
+
             setShowEditTagDropdown(false);
             setShowTagDropdown(true);
             return res.data;
@@ -180,7 +184,6 @@ function TagDropdown({ task, tags, setTags, selectedTags, setSelectedTags }) {
                     </div>
                 </div>
             )}
-
             {showAddTagDropdown && (
                 <div className="dropdown-tags">
                     <div className="header-container">
@@ -218,7 +221,6 @@ function TagDropdown({ task, tags, setTags, selectedTags, setSelectedTags }) {
                     </div>
                 </div>
             )}
-
             {showEditTagDropdown && (
                 <div className="dropdown-tags">
                     <div className="header-container">
@@ -258,18 +260,15 @@ function TagDropdown({ task, tags, setTags, selectedTags, setSelectedTags }) {
                     </div>
                 </div>
             )}
-
             <div className="add-tags">
                 {selectedTags.length > 0 && (
                     <div className="selected-tags">
                         <div className="tags">
                             {selectedTags.map((selectedTag) => {
                                 const tag = tags.find((tag) => tag.tag_id.toString() === selectedTag);
-
                                 if (!tag || !tag.tag_id || !tag.tag_color || !tag.tag_name) {
                                     return null;
                                 }
-
                                 return (
                                     <span className="tag" key={tag.tag_id} style={{ background: tag.tag_color }}>{tag.tag_name}</span>
                                 );
@@ -277,7 +276,6 @@ function TagDropdown({ task, tags, setTags, selectedTags, setSelectedTags }) {
                         </div>
                     </div>
                 )}
-
                 <div className="tagDrop-btn">
                     <span className="material-symbols-outlined" onClick={handleAddTagClick}>add</span>
                 </div>
